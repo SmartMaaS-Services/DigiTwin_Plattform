@@ -6,14 +6,14 @@ Daraus haben wir nur die für das Projekt notwendigen Komponenten eingesetzt und
 
 ## Liste der FIWARE Komponenten in diesem Projekt
 
-- [KeyRock](https://gitlab.com/zentrale-open-data-plattform-paderborn/fiware/keyrock "Dokumentation Keyrock") 
-- [Umbrella](https://gitlab.com/zentrale-open-data-plattform-paderborn/fiware/umbrella "Dokumentation Umbrella")
-- [TenantManager](https://gitlab.com/zentrale-open-data-plattform-paderborn/fiware/tenantmanager "Dokumentation TenantManager")
-- [Orion (Version V2)](https://gitlab.com/zentrale-open-data-plattform-paderborn/fiware/orion "Dokumentation Orion")
-- [MongoDB](https://gitlab.com/zentrale-open-data-plattform-paderborn/fiware/mongo "Dokumentation MongoDB")
+- [KeyRock](https://gitlab.com/zentrale-open-data-plattform-paderborn/fiware/keyrock "Dokumentation Keyrock") Account Management
+- [Umbrella](https://gitlab.com/zentrale-open-data-plattform-paderborn/fiware/umbrella "Dokumentation Umbrella") Routing
+- [TenantManager](https://gitlab.com/zentrale-open-data-plattform-paderborn/fiware/tenantmanager "Dokumentation TenantManager") Erweiterung um Tenants in die KeyRoch Organisationen abzulegen.
+- [Orion (Version V2)](https://gitlab.com/zentrale-open-data-plattform-paderborn/fiware/orion "Dokumentation Orion") Der ContextBroker für NGSI V2
+- [MongoDB](https://gitlab.com/zentrale-open-data-plattform-paderborn/fiware/mongo "Dokumentation MongoDB") Datenbank für die JSON Modelle und Context Daten
 - [MySQLDB]()
-- [Node-RED](https://gitlab.com/zentrale-open-data-plattform-paderborn/fiware/node-red-on-k8s "Dokumentation Node-RED")
-- [Platform (APIinf)](https://gitlab.com/zentrale-open-data-plattform-paderborn/fiware/platform "Dokumentation Platform")
+- [Node-RED](https://gitlab.com/zentrale-open-data-plattform-paderborn/fiware/node-red-on-k8s "Dokumentation Node-RED") Datenverarbeitung Flow basiert als Low Code Variante
+- [Platform (APIinf)](https://gitlab.com/zentrale-open-data-plattform-paderborn/fiware/platform "Dokumentation Platform") Die Notwendigen APIs der Plattform
 - [Installation der Plattform und einrichten der Secrets](https://gitlab.com/zentrale-open-data-plattform-paderborn/fiware/installation/-/tree/master/platform-setup)
 
 ## Einrichten des Tenant
