@@ -1,0 +1,622 @@
+[
+    {
+        "id": "93572610.340528",
+        "type": "tab",
+        "label": "TimeTable erstellen",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "9a1ba9e3.4b3578",
+        "type": "function",
+        "z": "93572610.340528",
+        "name": "Marudor Oppendorf RB",
+        "func": "msg.url = \"https://marudor.de/api/hafas/v2/arrivalStationBoard?station=8003260&profile=nahsh\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 430,
+        "y": 140,
+        "wires": [
+            [
+                "5ec77474.18292c"
+            ]
+        ]
+    },
+    {
+        "id": "92e94019.d578a8",
+        "type": "debug",
+        "z": "93572610.340528",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1300,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "5ec77474.18292c",
+        "type": "http request",
+        "z": "93572610.340528",
+        "name": "Marudor API abfragen",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 920,
+        "y": 160,
+        "wires": [
+            [
+                "6b345c0c.27d14c",
+                "3f468304.cd8734"
+            ]
+        ]
+    },
+    {
+        "id": "6b345c0c.27d14c",
+        "type": "json",
+        "z": "93572610.340528",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 1120,
+        "y": 160,
+        "wires": [
+            [
+                "92e94019.d578a8",
+                "7e007b09.cbecf4"
+            ]
+        ]
+    },
+    {
+        "id": "7e007b09.cbecf4",
+        "type": "function",
+        "z": "93572610.340528",
+        "name": "DFI TimeTable",
+        "func": "var msg1 = {};\n\nfor(i=0;i<10;i++){\n    msg1.payload = {\n        currentStation:{\n            id:msg.payload[i].currentStation.id,\n            title:msg.payload[i].currentStation.title\n        },\n        coordinates:msg.payload[i].currentStation.coordinates,\n        finalDestination:msg.payload[i].finalDestination,\n        product_name:msg.payload[i].currentStation.products[0].name,\n        product_line:msg.payload[i].currentStation.products[0].line,\n        product_type:(msg.payload[i].currentStation.products[0].type).trim(),\n        arrival_scheduledTime:msg.payload[i].arrival.scheduledTime,\n        arrival_time:msg.payload[i].arrival.time,\n        arrival_delay:msg.payload[i].arrival.delay\n        \n    }\n    msg1.topic = msg.payload[i].currentStation.id;\n    node.send(msg1);\n}\nreturn;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 410,
+        "y": 280,
+        "wires": [
+            [
+                "a21a2724.3b69b8",
+                "2caa7feb.811d68"
+            ]
+        ]
+    },
+    {
+        "id": "7014b0dd.ef1fc8",
+        "type": "debug",
+        "z": "93572610.340528",
+        "name": "RB",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1050,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "1060de74.01f702",
+        "type": "function",
+        "z": "93572610.340528",
+        "name": "Marudor Citti-Park",
+        "func": "msg.url = \"https://marudor.de/api/hafas/v2/arrivalStationBoard?station=8003474&profile=nahsh\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 430,
+        "y": 60,
+        "wires": [
+            [
+                "670a2599.58f6b4"
+            ]
+        ]
+    },
+    {
+        "id": "d06e8370.e0a268",
+        "type": "function",
+        "z": "93572610.340528",
+        "name": "Marudor Oppendorf Bus",
+        "func": "msg.url = \"https://marudor.de/api/hafas/v2/arrivalStationBoard?station=4301055&profile=nahsh\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 430,
+        "y": 200,
+        "wires": [
+            [
+                "5ec77474.18292c"
+            ]
+        ]
+    },
+    {
+        "id": "ad4e1ba6.6adeb8",
+        "type": "inject",
+        "z": "93572610.340528",
+        "name": "alle 2 Minuten",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "120",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 180,
+        "y": 140,
+        "wires": [
+            [
+                "d06e8370.e0a268",
+                "9a1ba9e3.4b3578",
+                "1060de74.01f702"
+            ]
+        ]
+    },
+    {
+        "id": "3f468304.cd8734",
+        "type": "debug",
+        "z": "93572610.340528",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1150,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "a21a2724.3b69b8",
+        "type": "switch",
+        "z": "93572610.340528",
+        "name": "Transport Type",
+        "property": "payload.product_type",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "RB",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Bus",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 660,
+        "y": 280,
+        "wires": [
+            [
+                "7014b0dd.ef1fc8",
+                "af4ecf2a.ff73f"
+            ],
+            [
+                "bd9f78be.5054c8",
+                "317b72aa.286f7e"
+            ],
+            [
+                "4808d515.8c8514"
+            ]
+        ]
+    },
+    {
+        "id": "bd9f78be.5054c8",
+        "type": "debug",
+        "z": "93572610.340528",
+        "name": "Bus",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1050,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "4808d515.8c8514",
+        "type": "debug",
+        "z": "93572610.340528",
+        "name": "Rest",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1050,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "c7c38bed.727568",
+        "type": "inject",
+        "z": "93572610.340528",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160,
+        "y": 680,
+        "wires": [
+            [
+                "7bd2a169.a5e7d"
+            ]
+        ]
+    },
+    {
+        "id": "7bd2a169.a5e7d",
+        "type": "function",
+        "z": "93572610.340528",
+        "name": "get TransportInfo",
+        "func": "// lese den aktuellen Token und setze die Header\nvar ACCESS_TOKEN = global.get(\"ACCESS_TOKEN\");\nvar FIWARE_SERVICE = global.get(\"FIWARE_SERVICE\");\nvar FIWARE_SERVICEPATH = global.get(\"FIWARE_SERVICEPATH\");\nvar CONTEXTBROKER = global.get(\"CONTEXTBROKER\");\n\nmsg.headers={};\nmsg.headers['Accept']=\"application/json\";\nmsg.headers['Fiware-Service']=FIWARE_SERVICE;\nmsg.headers['Fiware-Servicepath']=FIWARE_SERVICEPATH;\nmsg.headers['Authorization']=\"Bearer \" + ACCESS_TOKEN;\n\nmsg.url=CONTEXTBROKER+\"/v2/entities/?idPattern=TransportInfo\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 350,
+        "y": 680,
+        "wires": [
+            [
+                "186e0973.6dae9f"
+            ]
+        ]
+    },
+    {
+        "id": "186e0973.6dae9f",
+        "type": "http request",
+        "z": "93572610.340528",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 610,
+        "y": 680,
+        "wires": [
+            [
+                "56a8c367.ea0394"
+            ]
+        ]
+    },
+    {
+        "id": "56a8c367.ea0394",
+        "type": "json",
+        "z": "93572610.340528",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 770,
+        "y": 680,
+        "wires": [
+            [
+                "8352f305.d60fb"
+            ]
+        ]
+    },
+    {
+        "id": "8352f305.d60fb",
+        "type": "debug",
+        "z": "93572610.340528",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 950,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "664c249a.cd72e4",
+        "type": "function",
+        "z": "93572610.340528",
+        "name": "Passe TransportStop RB an",
+        "func": "msg1 = {};\n// lese den aktuellen Token und setze die Header\nvar ACCESS_TOKEN = global.get(\"ACCESS_TOKEN\");\nvar FIWARE_SERVICE = global.get(\"FIWARE_SERVICE\");\nvar FIWARE_SERVICEPATH = global.get(\"FIWARE_SERVICEPATH\");\nvar CONTEXTBROKER = global.get(\"CONTEXTBROKER\");\n\nvar date;\n\n//FIWARE_SERVICE = \"digitwin\";\n\nmsg1.headers={};\nmsg1.headers['Accept']=\"application/json\";\nmsg1.headers['Fiware-Service']=FIWARE_SERVICE;\nmsg1.headers['Fiware-Servicepath']=FIWARE_SERVICEPATH;\nmsg1.headers['Authorization']=\"Bearer \" + ACCESS_TOKEN;\n\ndate = new Date();\ndate = (date.getFullYear() + '-' + ('00' + (date.getMonth()+1)).slice(-2) + '-' + ('00' + date.getDate()).slice(-2) + 'T' + ('00' + date.getHours()).slice(-2) + ':' + ('00' + date.getMinutes()).slice(-2) + ':' + ('00' + date.getSeconds()).slice(-2)) +\"Z\";\n\nvar TransportTimes = [];\nvar anz = msg.payload.length;\nfor(i=0;i<anz;i++){\n    TransportTime = {\n        finalDestination:{\n            type: \"string\",\n            value:msg.payload[i].finalDestination\n        },\n        line:{\n            type: \"string\",\n            value:msg.payload[i].product_line\n        },\n        arrivalScheduledTime:{\n            type: \"datetime\",\n            value:msg.payload[i].arrival_scheduledTime\n        },\n        arrivalTime:{\n            type: \"datetime\",\n            value:msg.payload[i].arrival_time\n        },\n        arrivalDeley:{\n            type: \"number\",\n            value:msg.payload[i].arrival_delay\n        }\n    }\n    TransportTimes.push(TransportTime)\n}\n\nmsg1.url = CONTEXTBROKER + \"/v2/op/update\";\nmsg1.payload = {\n    actionType:\"append\",\n    entities:[\n        {\n\t\ttype: \"TransportInfo\",\n\t\tid: \"urn:ngsi:TransportInfo:\" + msg.payload[0].currentStation.id,\n        location: {\n            type: \"geo:json\",\n            value: {\n                type: \"Point\",\n                coordinates: [\n                    msg.payload[0].coordinates.lng,\n                    msg.payload[0].coordinates.lat\n                ]\n            }\n        },\t\t\n        currentStationName: {\n            type: \"string\",\n            value: msg.payload[0].currentStation.title\n        },\n        currentStationid: {\n            type: \"string\",\n            value: msg.payload[0].currentStation.id\n        },\n        name: {\n            type: \"Text\",\n            value: \"DFI RB \" + msg.payload[0].currentStation.title\n        },        \n        TransportTimes:{\n\t\t    type: \"StructuredValue\",\n\t\t    value: TransportTimes\n\t\t}\n\t}\n    ]\n}\n\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 400,
+        "y": 560,
+        "wires": [
+            [
+                "40d3b661.4aad38",
+                "1177b1cc.0f02d6"
+            ]
+        ]
+    },
+    {
+        "id": "af4ecf2a.ff73f",
+        "type": "join",
+        "z": "93572610.340528",
+        "name": "Join RB Times",
+        "mode": "custom",
+        "build": "array",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "num",
+        "reduceFixup": "",
+        "x": 420,
+        "y": 380,
+        "wires": [
+            [
+                "38a3f22.f62950e",
+                "664c249a.cd72e4"
+            ]
+        ]
+    },
+    {
+        "id": "317b72aa.286f7e",
+        "type": "join",
+        "z": "93572610.340528",
+        "name": "Join Bus Times",
+        "mode": "custom",
+        "build": "array",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "6",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 420,
+        "y": 420,
+        "wires": [
+            [
+                "19c5a445.166094",
+                "be8343c7.cec8f8"
+            ]
+        ]
+    },
+    {
+        "id": "38a3f22.f62950e",
+        "type": "debug",
+        "z": "93572610.340528",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 760,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "19c5a445.166094",
+        "type": "debug",
+        "z": "93572610.340528",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 760,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "40d3b661.4aad38",
+        "type": "debug",
+        "z": "93572610.340528",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 610,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "be8343c7.cec8f8",
+        "type": "function",
+        "z": "93572610.340528",
+        "name": "Passe TransportStop Bus an",
+        "func": "msg1 = {};\n// lese den aktuellen Token und setze die Header\nvar ACCESS_TOKEN = global.get(\"ACCESS_TOKEN\");\nvar FIWARE_SERVICE = global.get(\"FIWARE_SERVICE\");\nvar FIWARE_SERVICEPATH = global.get(\"FIWARE_SERVICEPATH\");\nvar CONTEXTBROKER = global.get(\"CONTEXTBROKER\");\n\nvar date;\n\n//FIWARE_SERVICE = \"digitwin\";\n\nmsg1.headers={};\nmsg1.headers['Accept']=\"application/json\";\nmsg1.headers['Fiware-Service']=FIWARE_SERVICE;\nmsg1.headers['Fiware-Servicepath']=FIWARE_SERVICEPATH;\nmsg1.headers['Authorization']=\"Bearer \" + ACCESS_TOKEN;\n\ndate = new Date();\ndate = (date.getFullYear() + '-' + ('00' + (date.getMonth()+1)).slice(-2) + '-' + ('00' + date.getDate()).slice(-2) + 'T' + ('00' + date.getHours()).slice(-2) + ':' + ('00' + date.getMinutes()).slice(-2) + ':' + ('00' + date.getSeconds()).slice(-2)) +\"Z\";\n\nvar TransportTimes = [];\nvar anz = msg.payload.length;\nfor(i=0;i<anz;i++){\n    TransportTime = {\n        finalDestination:{\n            type: \"string\",\n            value:msg.payload[i].finalDestination\n        },\n        line:{\n            type: \"string\",\n            value:msg.payload[i].product_line\n        },\n        arrivalScheduledTime:{\n            type: \"datetime\",\n            value:msg.payload[i].arrival_scheduledTime\n        },\n        arrivalTime:{\n            type: \"datetime\",\n            value:msg.payload[i].arrival_time\n        },\n        arrivalDeley:{\n            type: \"number\",\n            value:msg.payload[i].arrival_delay\n        }\n    }\n    TransportTimes.push(TransportTime)\n}\n\nmsg1.url = CONTEXTBROKER + \"/v2/op/update\";\nmsg1.payload = {\n    actionType:\"append\",\n    entities:[\n        {\n\t\ttype: \"TransportInfo\",\n\t\tid: \"urn:ngsi:TransportInfo:\" + msg.payload[0].currentStation.id,\n        location: {\n            type: \"geo:json\",\n            value: {\n                type: \"Point\",\n                coordinates: [\n                    msg.payload[0].coordinates.lng,\n                    msg.payload[0].coordinates.lat\n                ]\n            }\n        },\t\t\n        currentStationName: {\n            type: \"string\",\n            value: msg.payload[0].currentStation.title\n        },\n        currentStationid: {\n            type: \"string\",\n            value: msg.payload[0].currentStation.id\n        },\n        name: {\n            type: \"Text\",\n            value: \"DFI Bus \" + msg.payload[0].currentStation.title\n        },        \n\t\n\t\tTransportTimes:{\n\t\t    type: \"StructuredValue\",\n\t\t    value: TransportTimes\n\t\t}\n\t}\n    ]\n}\n\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 400,
+        "y": 600,
+        "wires": [
+            [
+                "dae76004.8589c",
+                "1177b1cc.0f02d6"
+            ]
+        ]
+    },
+    {
+        "id": "dae76004.8589c",
+        "type": "debug",
+        "z": "93572610.340528",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 610,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "1177b1cc.0f02d6",
+        "type": "http request",
+        "z": "93572610.340528",
+        "name": "Anlegen aller TimeTable",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 850,
+        "y": 560,
+        "wires": [
+            [
+                "eeecea4f.9fd4a8"
+            ]
+        ]
+    },
+    {
+        "id": "eeecea4f.9fd4a8",
+        "type": "debug",
+        "z": "93572610.340528",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1070,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "670a2599.58f6b4",
+        "type": "delay",
+        "z": "93572610.340528",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "10",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 650,
+        "y": 60,
+        "wires": [
+            [
+                "5ec77474.18292c"
+            ]
+        ]
+    },
+    {
+        "id": "2caa7feb.811d68",
+        "type": "debug",
+        "z": "93572610.340528",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1070,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "d673aee9.fee618",
+        "type": "comment",
+        "z": "93572610.340528",
+        "name": "TimeTable erstellen",
+        "info": "",
+        "x": 150,
+        "y": 40,
+        "wires": []
+    }
+]

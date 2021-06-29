@@ -1,0 +1,375 @@
+[
+    {
+        "id": "d459159c.32c638",
+        "type": "tab",
+        "label": "Empfange Notifications",
+        "disabled": false,
+        "info": "Die Parking Spots liefern eine Notification wenn sich der Status geändert hat\nDiese Statusänderung löst eine Anpassung des referenzierten Parkplatzes aus.\nEs wird nur auf die echte Änderung reagiert, nicht aber auf den Watchdog im Port 2"
+    },
+    {
+        "id": "2a1aaa39.11d60e",
+        "type": "comment",
+        "z": "d459159c.32c638",
+        "name": "Empfangen der Notification vom Context Broker",
+        "info": "",
+        "x": 220,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "8d20489e.45e6a",
+        "type": "switch",
+        "z": "d459159c.32c638",
+        "name": "Subscibtion Type",
+        "property": "payload.data[0].type",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "Device",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "ParkingSpot",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "OffStreetParking",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Vehicle",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "BikeHireDockingStation",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "WeatherObserved",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "AccessPoint",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 8,
+        "x": 330,
+        "y": 200,
+        "wires": [
+            [
+                "e3cc93a7.70acd8",
+                "d2cb91a6.52c7b8"
+            ],
+            [
+                "5dc7bba9.2fec34",
+                "354b4b4b.087d4c"
+            ],
+            [
+                "f78ff307.82cbd",
+                "deb68102.882b9"
+            ],
+            [
+                "c9b37a69.3d999",
+                "769078f6.5bc548"
+            ],
+            [
+                "4f60a932.53799",
+                "6cd6b27a.12c3c4"
+            ],
+            [
+                "80532d6c.ded9",
+                "93eec546.660ad"
+            ],
+            [
+                "7254a8de.651de",
+                "8aaf33f.fddc35"
+            ],
+            [
+                "f5f7e222.70d0c8"
+            ]
+        ],
+        "outputLabels": [
+            "Device",
+            "ParkingSpot",
+            "OffStreetParking",
+            "Vehicle",
+            "",
+            "",
+            null,
+            "Rest"
+        ]
+    },
+    {
+        "id": "f5f7e222.70d0c8",
+        "type": "debug",
+        "z": "d459159c.32c638",
+        "name": "Rest",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 750,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "e3cc93a7.70acd8",
+        "type": "debug",
+        "z": "d459159c.32c638",
+        "name": "Parking Device",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 780,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "5dc7bba9.2fec34",
+        "type": "debug",
+        "z": "d459159c.32c638",
+        "name": "ParkingSpot",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 770,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "f78ff307.82cbd",
+        "type": "debug",
+        "z": "d459159c.32c638",
+        "name": "OffStreetParking",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 780,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "d2cb91a6.52c7b8",
+        "type": "link out",
+        "z": "d459159c.32c638",
+        "name": "send ParkingDevice",
+        "links": [
+            "3c282050.3b676"
+        ],
+        "x": 715,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "354b4b4b.087d4c",
+        "type": "link out",
+        "z": "d459159c.32c638",
+        "name": "send ParkingSpot",
+        "links": [
+            "4f1c9c01.141444",
+            "30cabcf3.daa694"
+        ],
+        "x": 715,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "c9b37a69.3d999",
+        "type": "debug",
+        "z": "d459159c.32c638",
+        "name": "Vehicle",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 760,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "769078f6.5bc548",
+        "type": "link out",
+        "z": "d459159c.32c638",
+        "name": "send Vehicle",
+        "links": [
+            "5cb3d5f0.1dbf1c"
+        ],
+        "x": 715,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "37f4488a.0747d8",
+        "type": "link in",
+        "z": "d459159c.32c638",
+        "name": "erkenne Subcription Type",
+        "links": [
+            "c42e8bab.c877c8",
+            "937c4d54.4c65e8",
+            "876c822e.2ea2e8",
+            "935354dc.b65c",
+            "c1b5d3fe.020c08",
+            "2e1d5242.73b146"
+        ],
+        "x": 175,
+        "y": 200,
+        "wires": [
+            [
+                "8d20489e.45e6a",
+                "d9b9d592.a08748"
+            ]
+        ]
+    },
+    {
+        "id": "4f60a932.53799",
+        "type": "debug",
+        "z": "d459159c.32c638",
+        "name": "BikeHireDockingStation",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 810,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "6cd6b27a.12c3c4",
+        "type": "link out",
+        "z": "d459159c.32c638",
+        "name": "send BikeHireDockingStation",
+        "links": [
+            "a81ddda7.5af1d"
+        ],
+        "x": 715,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "deb68102.882b9",
+        "type": "link out",
+        "z": "d459159c.32c638",
+        "name": "send OffStreetParking",
+        "links": [
+            "3a4d8586.c31212",
+            "bd3e687c.02dd1"
+        ],
+        "x": 715,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "80532d6c.ded9",
+        "type": "debug",
+        "z": "d459159c.32c638",
+        "name": "WeatherObserved",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "93eec546.660ad",
+        "type": "link out",
+        "z": "d459159c.32c638",
+        "name": "send WeatherObserved",
+        "links": [
+            "52ab1139.7c76a8"
+        ],
+        "x": 715,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "8aaf33f.fddc35",
+        "type": "debug",
+        "z": "d459159c.32c638",
+        "name": "AccessPoint",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 770,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "7254a8de.651de",
+        "type": "link out",
+        "z": "d459159c.32c638",
+        "name": "sende AccessPoint",
+        "links": [
+            "b1055d73.62a38"
+        ],
+        "x": 715,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "d9b9d592.a08748",
+        "type": "debug",
+        "z": "d459159c.32c638",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 320,
+        "y": 120,
+        "wires": []
+    }
+]

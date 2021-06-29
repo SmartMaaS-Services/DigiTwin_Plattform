@@ -1,0 +1,325 @@
+[
+    {
+        "id": "1769c51f.4f2eab",
+        "type": "tab",
+        "label": "Parking Device",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "3c282050.3b676",
+        "type": "link in",
+        "z": "1769c51f.4f2eab",
+        "name": "Verarbeite Parking Devices",
+        "links": [
+            "d2cb91a6.52c7b8"
+        ],
+        "x": 215,
+        "y": 120,
+        "wires": [
+            [
+                "5c4b0060.188d08"
+            ]
+        ]
+    },
+    {
+        "id": "aef0328e.903738",
+        "type": "switch",
+        "z": "1769c51f.4f2eab",
+        "name": "Port erkennen",
+        "property": "payload.data[0].value.value[2]",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "2",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 640,
+        "y": 400,
+        "wires": [
+            [
+                "2e0ae903.bb883e"
+            ],
+            [
+                "510996a1.08d77",
+                "1e41f91d.149a1f"
+            ],
+            [
+                "1fce1744.5dded9"
+            ]
+        ],
+        "outputLabels": [
+            "Parking Changes",
+            "Watchdog",
+            ""
+        ]
+    },
+    {
+        "id": "510996a1.08d77",
+        "type": "debug",
+        "z": "1769c51f.4f2eab",
+        "name": "Port 2 (WatchDog)",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 930,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "1fce1744.5dded9",
+        "type": "debug",
+        "z": "1769c51f.4f2eab",
+        "name": "Rest (Meldung unbekannt)",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 960,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "5c4b0060.188d08",
+        "type": "function",
+        "z": "1769c51f.4f2eab",
+        "name": "Split Data Array",
+        "func": "var msg1 = {};\n//Wieviele Elemente habe ich im Array?\nvar anz = msg.payload.data.length;\n\nfor (i=0;i<anz;i++){\n    msg1.payload = {\n        data:[msg.payload.data[i]],\n        tenant:msg.payload.tenant\n    }\n    node.send(msg1);\n}\n\nreturn;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 340,
+        "y": 120,
+        "wires": [
+            [
+                "1d931e7f.c7cb6a",
+                "995f8d70.ea2538"
+            ]
+        ]
+    },
+    {
+        "id": "9a32372f.75c658",
+        "type": "comment",
+        "z": "1769c51f.4f2eab",
+        "name": "Verarbeite die Notification von Parking Devices",
+        "info": "",
+        "x": 270,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "1e41f91d.149a1f",
+        "type": "link out",
+        "z": "1769c51f.4f2eab",
+        "name": "Sende Port2 Parksensor ",
+        "links": [
+            "465f8a9a.0ed614"
+        ],
+        "x": 855,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "2e0ae903.bb883e",
+        "type": "link out",
+        "z": "1769c51f.4f2eab",
+        "name": "Sende Port1 Parksensor ",
+        "links": [
+            "9fb1e9c0.48628"
+        ],
+        "x": 895,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "1d931e7f.c7cb6a",
+        "type": "debug",
+        "z": "1769c51f.4f2eab",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 660,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "7e3eabae.92304c",
+        "type": "switch",
+        "z": "1769c51f.4f2eab",
+        "name": "Value Struktur Type erhalten",
+        "property": "payload.data[0].value.type",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "StructuredValue",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Text",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 360,
+        "y": 560,
+        "wires": [
+            [
+                "aef0328e.903738"
+            ],
+            [
+                "ff71a863.6cc71",
+                "bdee4c47.c237c"
+            ],
+            [
+                "78eaa292.ae7a2c"
+            ]
+        ]
+    },
+    {
+        "id": "78eaa292.ae7a2c",
+        "type": "debug",
+        "z": "1769c51f.4f2eab",
+        "name": "Rest (Meldung unbekannt)",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 960,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "4bda172d.4ca1e",
+        "type": "comment",
+        "z": "1769c51f.4f2eab",
+        "name": "LoRaWAN Device via ispeg.cloud",
+        "info": "",
+        "x": 590,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "ff71a863.6cc71",
+        "type": "link out",
+        "z": "1769c51f.4f2eab",
+        "name": "Sende Zenner Parksensor ",
+        "links": [
+            "5c36d26.faedd2c"
+        ],
+        "x": 855,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "bdee4c47.c237c",
+        "type": "debug",
+        "z": "1769c51f.4f2eab",
+        "name": "Zenner Plattform",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 930,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "995f8d70.ea2538",
+        "type": "switch",
+        "z": "1769c51f.4f2eab",
+        "name": "Text oder struktuiertes Value",
+        "property": "payload.data[0].value.type",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "Text",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "StructuredValue",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 380,
+        "y": 200,
+        "wires": [
+            [
+                "2e0ae903.bb883e"
+            ],
+            [
+                "7e3eabae.92304c"
+            ],
+            [
+                "f095543b.692458"
+            ]
+        ]
+    },
+    {
+        "id": "f095543b.692458",
+        "type": "debug",
+        "z": "1769c51f.4f2eab",
+        "name": "Unbekannter Status",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 220,
+        "wires": []
+    }
+]

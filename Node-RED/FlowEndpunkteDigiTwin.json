@@ -1,0 +1,106 @@
+[
+    {
+        "id": "f836d1bd.68c6e",
+        "type": "tab",
+        "label": "Endpunkte DigiTwin",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "3a2f1c02.865ae4",
+        "type": "comment",
+        "z": "f836d1bd.68c6e",
+        "name": "Empfangen der Notification vom Context Broker",
+        "info": "",
+        "x": 240,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "63dd7581.b145ec",
+        "type": "http in",
+        "z": "f836d1bd.68c6e",
+        "name": "Endpunkt /dt_kielregionparking",
+        "url": "/dt_kielregionparking",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 190,
+        "y": 200,
+        "wires": [
+            [
+                "5700511.b5356b",
+                "29891a02.21af66",
+                "ac3c0f2c.591ef8"
+            ]
+        ]
+    },
+    {
+        "id": "29891a02.21af66",
+        "type": "http response",
+        "z": "f836d1bd.68c6e",
+        "name": "Resonse 200",
+        "statusCode": "200",
+        "headers": {},
+        "x": 970,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "5700511.b5356b",
+        "type": "debug",
+        "z": "f836d1bd.68c6e",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 450,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "3f5806a8.1718a2",
+        "type": "link out",
+        "z": "f836d1bd.68c6e",
+        "name": "vom Endpunkt dt_kielregionparking",
+        "links": [
+            "37f4488a.0747d8"
+        ],
+        "x": 815,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "302aca44.a6e596",
+        "type": "comment",
+        "z": "f836d1bd.68c6e",
+        "name": "DigiTwin",
+        "info": "",
+        "x": 90,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "ac3c0f2c.591ef8",
+        "type": "function",
+        "z": "f836d1bd.68c6e",
+        "name": "set FIWARE_SERVICE to payload.tenant",
+        "func": "var msg1 = {};\nvar FIWARE_SERVICE = global.get(\"FIWARE_SERVICE\");\nmsg1.payload = msg.payload;\nmsg1.payload.tenant = FIWARE_SERVICE;\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 540,
+        "y": 260,
+        "wires": [
+            [
+                "3f5806a8.1718a2"
+            ]
+        ]
+    }
+]

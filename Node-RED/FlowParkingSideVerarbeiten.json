@@ -1,0 +1,381 @@
+[
+    {
+        "id": "91db954f.b78d",
+        "type": "tab",
+        "label": "ParkingSide verarbeiten",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "4f1c9c01.141444",
+        "type": "link in",
+        "z": "91db954f.b78d",
+        "name": "verarbeite Statusänderung ParkingSpot",
+        "links": [
+            "354b4b4b.087d4c"
+        ],
+        "x": 235,
+        "y": 120,
+        "wires": [
+            [
+                "f321af6f.07914"
+            ]
+        ]
+    },
+    {
+        "id": "9353e025.868748",
+        "type": "comment",
+        "z": "91db954f.b78d",
+        "name": "Notification ParkingSpot verarbeiten",
+        "info": "",
+        "x": 300,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "c35c1074.888d9",
+        "type": "debug",
+        "z": "91db954f.b78d",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 610,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "a1a1f38.372421",
+        "type": "comment",
+        "z": "91db954f.b78d",
+        "name": "lese Referenzierten Parkplatz (ParkingSite) aus",
+        "info": "",
+        "x": 340,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "b0af80a8.bfe0d",
+        "type": "function",
+        "z": "91db954f.b78d",
+        "name": "Lese refParkingSite",
+        "func": "var msg1 = {};\n\n// lese den aktuellen Token und setze die Header\nvar ACCESS_TOKEN = global.get(\"ACCESS_TOKEN\");\nvar FIWARE_SERVICE = global.get(\"FIWARE_SERVICE\");\nvar FIWARE_SERVICEPATH = global.get(\"FIWARE_SERVICEPATH\");\nvar CONTEXTBROKER = global.get(\"CONTEXTBROKER\");\n\nFIWARE_SERVICE = msg.payload.tenant;\n\n// Alten Payload mitnehmen\nmsg1.oldpayload = msg.payload.data[0];\nmsg1.oldpayload.tenant = msg.payload.tenant;\n\nmsg1.headers={};\nmsg1.headers['Accept']=\"application/json\";\nmsg1.headers['Fiware-Service']=FIWARE_SERVICE;\nmsg1.headers['Fiware-Servicepath']=FIWARE_SERVICEPATH;\nmsg1.headers['Authorization']=\"Bearer \" + ACCESS_TOKEN;\n\n// lese den Referenzierten Parkplatz\nmsg1.url=CONTEXTBROKER + \"/v2/entities/\" + msg.payload.data[0].refParkingSite.value;\n\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 300,
+        "wires": [
+            [
+                "f301ebaf.845878",
+                "e8fe473b.3f24e8"
+            ]
+        ]
+    },
+    {
+        "id": "48bebdba.8b9cdc",
+        "type": "debug",
+        "z": "91db954f.b78d",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1030,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "f301ebaf.845878",
+        "type": "http request",
+        "z": "91db954f.b78d",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": false,
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 630,
+        "y": 300,
+        "wires": [
+            [
+                "86fbd340.064258"
+            ]
+        ]
+    },
+    {
+        "id": "86fbd340.064258",
+        "type": "json",
+        "z": "91db954f.b78d",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 830,
+        "y": 300,
+        "wires": [
+            [
+                "48bebdba.8b9cdc",
+                "9b5bbe7e.9c1cc"
+            ]
+        ]
+    },
+    {
+        "id": "ab6ac749.4c018",
+        "type": "debug",
+        "z": "91db954f.b78d",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1070,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "2c4f125.e60bb6e",
+        "type": "http request",
+        "z": "91db954f.b78d",
+        "name": "Update ParkingSpot",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 760,
+        "y": 740,
+        "wires": [
+            [
+                "ab6ac749.4c018",
+                "a3be5a0d.a496a8"
+            ]
+        ]
+    },
+    {
+        "id": "7c40a328.2f975c",
+        "type": "function",
+        "z": "91db954f.b78d",
+        "name": "Übertrage ParkingSpot Status in die ParkingSite",
+        "func": "var msg1 = {};\n\n// lese den aktuellen Token und setze die Header\nvar ACCESS_TOKEN = global.get(\"ACCESS_TOKEN\");\nvar FIWARE_SERVICE = global.get(\"FIWARE_SERVICE\");\nvar FIWARE_SERVICEPATH = global.get(\"FIWARE_SERVICEPATH\");\nvar CONTEXTBROKER = global.get(\"CONTEXTBROKER\");\n\n//FIWARE_SERVICE = msg.oldpayload.tenant;\n\nmsg1.headers={};\nmsg1.headers['Accept']=\"application/json\";\nmsg1.headers['Fiware-Service']=FIWARE_SERVICE;\nmsg1.headers['Fiware-Servicepath']=FIWARE_SERVICEPATH;\nmsg1.headers['Authorization']=\"Bearer \" + ACCESS_TOKEN;\n\nvar OffStreetParking = msg.payload.refParkingSite.value\nnode.warn(\"Parkplatz: \" + OffStreetParking);\n\nvar parkingarray = flow.get(OffStreetParking) || [];\nnode.warn(\"Parkplatz_Array: \" + OffStreetParking);\n\n\n\nvar totalSpotNumber = parkingarray['total'];\nvar availableSpotNumber = parkingarray['free'];\nvar occupiedSpotNumber = parkingarray['occupied'];\nnode.warn(\"vor availableSpotNumber: \" + availableSpotNumber);\nnode.warn(\"vor occupiedSpotNumber: \" + occupiedSpotNumber);\n\nvar occupancy = occupiedSpotNumber/totalSpotNumber;\nnode.warn(\"nach occupancy: \" + occupancy);\n\n// Erstelle den geänderten Status zum wegschreiben\nmsg1.url = CONTEXTBROKER + \"/v2/op/update\";\nmsg1.payload = {\n    actionType:\"append\",\n    entities:[\n        {\n\t\tid: OffStreetParking,\n\t\tavailableSpotNumber:{\n\t\t    value: availableSpotNumber\n\t\t    },\n\t\toccupiedSpotNumber:{\n\t\t    value: occupiedSpotNumber\n\t\t    },\n\t\toccupancy:{\n\t\t    value: occupancy\n\t\t    },\n\t\toccupancyModified:{\n\t\t    type: \"DateTime\",\n\t\t    value:new Date()\n\t\t}\n\t\t}\n    ]\n}\n\n\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 740,
+        "wires": [
+            [
+                "2c4f125.e60bb6e"
+            ]
+        ]
+    },
+    {
+        "id": "e8fe473b.3f24e8",
+        "type": "debug",
+        "z": "91db954f.b78d",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 530,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "f321af6f.07914",
+        "type": "function",
+        "z": "91db954f.b78d",
+        "name": "Split Data Array",
+        "func": "var msg1 = {};\n//Wieviele Elemente habe ich im Array?\nvar anz = msg.payload.data.length;\n\nfor (i=0;i<anz;i++){\n    msg1.payload = {\n        data:[msg.payload.data[i]],\n        tenant:msg.payload.tenant\n    }\n    node.send(msg1);\n}\n\nreturn;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 360,
+        "y": 120,
+        "wires": [
+            [
+                "c35c1074.888d9",
+                "b0af80a8.bfe0d"
+            ]
+        ]
+    },
+    {
+        "id": "a3be5a0d.a496a8",
+        "type": "link out",
+        "z": "91db954f.b78d",
+        "name": "sende Spot to Map",
+        "links": [
+            "3a4d8586.c31212"
+        ],
+        "x": 975,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "9713fd0b.8552b",
+        "type": "comment",
+        "z": "91db954f.b78d",
+        "name": "Lese alle Referenzierten Spots für die identifizierte Side",
+        "info": "",
+        "x": 360,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "9b5bbe7e.9c1cc",
+        "type": "function",
+        "z": "91db954f.b78d",
+        "name": "frage ParkingSpots ab",
+        "func": "var msg1 = {};\n\n// lese den aktuellen Token und setze die Header\nvar ACCESS_TOKEN = global.get(\"ACCESS_TOKEN\");\nvar FIWARE_SERVICE = global.get(\"FIWARE_SERVICE\");\nvar FIWARE_SERVICEPATH = global.get(\"FIWARE_SERVICEPATH\");\nvar CONTEXTBROKER = global.get(\"CONTEXTBROKER\");\n\nmsg1.headers={};\nmsg1.headers['Accept']=\"application/json\";\nmsg1.headers['Fiware-Service']=FIWARE_SERVICE;\nmsg1.headers['Fiware-Servicepath']=FIWARE_SERVICEPATH;\nmsg1.headers['Authorization']=\"Bearer \" + ACCESS_TOKEN;\n\nvar anz = msg.payload.refParkingSpot.value.length;\n\nfor(i=0;i<anz;i++){\n    flow.set(msg.payload.id+\"['free']\",0);\n    flow.set(msg.payload.id+\"['occupied']\",0);\n    flow.set(msg.payload.id+\"['total']\",anz);    \n    msg1.url=CONTEXTBROKER + \"/v2/entities/\" + msg.payload.refParkingSpot.value[i]+\"?attrs=id,status,refParkingSite\";\n    node.send(msg1)\n}\nreturn;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 480,
+        "wires": [
+            [
+                "9683f4bb.05cd1"
+            ]
+        ]
+    },
+    {
+        "id": "9683f4bb.05cd1",
+        "type": "http request",
+        "z": "91db954f.b78d",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 590,
+        "y": 480,
+        "wires": [
+            [
+                "bbb913b6.cc3368"
+            ]
+        ]
+    },
+    {
+        "id": "bbb913b6.cc3368",
+        "type": "json",
+        "z": "91db954f.b78d",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 770,
+        "y": 480,
+        "wires": [
+            [
+                "844e6cdf.974948",
+                "c590c50a.4f7ca8"
+            ]
+        ]
+    },
+    {
+        "id": "c590c50a.4f7ca8",
+        "type": "function",
+        "z": "91db954f.b78d",
+        "name": "berechne Status OffStreetParking",
+        "func": "var OffStreetParking = msg.payload.refParkingSite.value;\n\nvar parkingarray = flow.get(OffStreetParking) || [];\n\nvar occupied = parkingarray['occupied'];\nvar free = parkingarray['free'];\n\nif(msg.payload.status.value == \"occupied\"){\n    occupied = occupied + 1\n} \nif(msg.payload.status.value == \"free\"){\n    free = free + 1\n} \nparkingarray['occupied']=occupied;\nparkingarray['free']=free;\n\n\n    flow.set(OffStreetParking+\"['free']\",parkingarray['free']);\n    flow.set(OffStreetParking+\"['occupied']\",parkingarray['occupied']);\n\nnode.warn(parkingarray);\nvar test = -1;\ntest = parkingarray['total'] - parkingarray['free'] - parkingarray['occupied'] ;\nnode.warn(\"Test: \"+test);\nif(test === 0) {\n    node.send(msg);\n}\nreturn;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 620,
+        "wires": [
+            [
+                "e3fd3a3b.af889",
+                "7c40a328.2f975c"
+            ]
+        ]
+    },
+    {
+        "id": "25e20a48.466ab6",
+        "type": "comment",
+        "z": "91db954f.b78d",
+        "name": "Zusammenfassen der Status Ergebnisse",
+        "info": "",
+        "x": 380,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "e4ce4532.17b818",
+        "type": "comment",
+        "z": "91db954f.b78d",
+        "name": "Es wird der OffStreetParking übergeben",
+        "info": "",
+        "x": 370,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "e3fd3a3b.af889",
+        "type": "debug",
+        "z": "91db954f.b78d",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1050,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "844e6cdf.974948",
+        "type": "debug",
+        "z": "91db954f.b78d",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1030,
+        "y": 480,
+        "wires": []
+    }
+]

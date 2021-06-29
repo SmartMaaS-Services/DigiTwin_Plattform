@@ -1,0 +1,219 @@
+[
+    {
+        "id": "c15baed7.14f608",
+        "type": "tab",
+        "label": "BodenTemperatur ParkingDevice",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "6697d02.34978b",
+        "type": "comment",
+        "z": "c15baed7.14f608",
+        "name": "den passenden WeatherObserved abfragen",
+        "info": "",
+        "x": 250,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "7da6986.fc6e9e8",
+        "type": "function",
+        "z": "c15baed7.14f608",
+        "name": "Erstelle BodenTemperatur Abfrage von Device auf WeatherObserved",
+        "func": "var msg1 = {};\n\n\n// lese den aktuellen Token und setze die Header\nvar ACCESS_TOKEN = global.get(\"ACCESS_TOKEN\");\nvar FIWARE_SERVICE = global.get(\"FIWARE_SERVICE\");\nvar FIWARE_SERVICEPATH = global.get(\"FIWARE_SERVICEPATH\");\nvar CONTEXTBROKER = global.get(\"CONTEXTBROKER\");\n\nFIWARE_SERVICE = msg.payload.tenant;\n\n// Alten Payload mitnehmen\nmsg1.oldpayload = msg.payload; \n\nmsg1.headers={};\nmsg1.headers['Accept']=\"application/json\";\nmsg1.headers['Fiware-Service']=FIWARE_SERVICE;\nmsg1.headers['Fiware-Servicepath']=FIWARE_SERVICEPATH;\nmsg1.headers['Authorization']=\"Bearer \" + ACCESS_TOKEN;\n\n// lese den Referenzierten Parkplatz\nvar controlledAssets = msg.payload.data[0].controlledAsset.value\n//node.warn(controlledAssets);\n\n// Loop duch Assets\nfor (i=0;i<controlledAssets.length;i++){\n    var Asset= controlledAssets[i].split(':');\n//    node.warn(Asset);\n    if (Asset[2] == \"WeatherObserved\") {\n        msg1.oldpayload.AssetID = i;\n        msg1.url= CONTEXTBROKER + \"/v2/entities/\" + controlledAssets[i];\n        break;\n    }\n}\n\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 550,
+        "y": 160,
+        "wires": [
+            [
+                "84cec4eb.4e9e7",
+                "b296f1b0.ecdcd8"
+            ]
+        ]
+    },
+    {
+        "id": "84cec4eb.4e9e7",
+        "type": "debug",
+        "z": "c15baed7.14f608",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 910,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "b296f1b0.ecdcd8",
+        "type": "http request",
+        "z": "c15baed7.14f608",
+        "name": "lese den Sensor aus",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 220,
+        "y": 260,
+        "wires": [
+            [
+                "d8c6237b.fb906"
+            ]
+        ]
+    },
+    {
+        "id": "d8c6237b.fb906",
+        "type": "json",
+        "z": "c15baed7.14f608",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 450,
+        "y": 260,
+        "wires": [
+            [
+                "df95776d.900fa",
+                "c7ba7324.ce1418"
+            ]
+        ]
+    },
+    {
+        "id": "df95776d.900fa",
+        "type": "debug",
+        "z": "c15baed7.14f608",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "c7ba7324.ce1418",
+        "type": "function",
+        "z": "c15baed7.14f608",
+        "name": "Passe die Temperatur an",
+        "func": "msg1 = {};\n// lese den aktuellen Token und setze die Header\nvar ACCESS_TOKEN = global.get(\"ACCESS_TOKEN\");\nvar FIWARE_SERVICE = global.get(\"FIWARE_SERVICE\");\nvar FIWARE_SERVICEPATH = global.get(\"FIWARE_SERVICEPATH\");\nvar CONTEXTBROKER = global.get(\"CONTEXTBROKER\");\n\nFIWARE_SERVICE = msg.oldpayload.tenant;\n\nmsg1.headers={};\nmsg1.headers['Accept']=\"application/json\";\nmsg1.headers['Fiware-Service']=FIWARE_SERVICE;\nmsg1.headers['Fiware-Servicepath']=FIWARE_SERVICEPATH;\nmsg1.headers['Authorization']=\"Bearer \" + ACCESS_TOKEN;\n\nmsg1.url = CONTEXTBROKER + \"/v2/op/update\";\nmsg1.payload = {\n    actionType:\"append\",\n    entities:[\n        {\n\t\ttype: \"WeatherObserved\",\n\t\tdateObserved: {\n\t\t\ttype: \"DateTime\",\n\t\t\tvalue: msg.oldpayload.data[0].value.metadata.timestamp.value\n\t\t},\n\t\tid: msg.payload.id,\n\t\ttemperature: {\n\t\t\tvalue: msg.oldpayload.data[0].value.value[3],\n\t\t\tmetadata:msg.oldpayload.data[0].value.metadata\n\t\t}\n\t}\n    ]\n}\n\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 230,
+        "y": 340,
+        "wires": [
+            [
+                "a180cb2c.6412c8"
+            ]
+        ]
+    },
+    {
+        "id": "a180cb2c.6412c8",
+        "type": "http request",
+        "z": "c15baed7.14f608",
+        "name": "Update Temperatur",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 510,
+        "y": 340,
+        "wires": [
+            [
+                "3c1ff307.fb6f5c"
+            ]
+        ]
+    },
+    {
+        "id": "45e9b2d9.cf0df4",
+        "type": "comment",
+        "z": "c15baed7.14f608",
+        "name": "Port 2 Meldung verarbeiten",
+        "info": "",
+        "x": 190,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "3c1ff307.fb6f5c",
+        "type": "debug",
+        "z": "c15baed7.14f608",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "22412e2.83a6752",
+        "type": "comment",
+        "z": "c15baed7.14f608",
+        "name": "Erstelle Bodentemperatur aus Parksensoren",
+        "info": "",
+        "x": 250,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "465f8a9a.0ed614",
+        "type": "link in",
+        "z": "c15baed7.14f608",
+        "name": "erstelle Bodentemperatur",
+        "links": [
+            "1e41f91d.149a1f"
+        ],
+        "x": 235,
+        "y": 160,
+        "wires": [
+            [
+                "7da6986.fc6e9e8",
+                "26ee2525.16f32a"
+            ]
+        ]
+    },
+    {
+        "id": "26ee2525.16f32a",
+        "type": "debug",
+        "z": "c15baed7.14f608",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 600,
+        "y": 120,
+        "wires": []
+    }
+]

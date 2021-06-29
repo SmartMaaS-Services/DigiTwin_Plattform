@@ -1,0 +1,708 @@
+[
+    {
+        "id": "1461efce.7e162",
+        "type": "tab",
+        "label": "Automatisches Update der Token",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "4aae1063.2c0a68",
+        "type": "http request",
+        "z": "1461efce.7e162",
+        "name": "",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "query",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 370,
+        "y": 520,
+        "wires": [
+            [
+                "35efdec3.2c7cd2"
+            ]
+        ]
+    },
+    {
+        "id": "35efdec3.2c7cd2",
+        "type": "json",
+        "z": "1461efce.7e162",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 550,
+        "y": 520,
+        "wires": [
+            [
+                "194faa0b.f88da6",
+                "8138ac48.414fd"
+            ]
+        ]
+    },
+    {
+        "id": "194faa0b.f88da6",
+        "type": "debug",
+        "z": "1461efce.7e162",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 770,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "d8c27fe4.11f71",
+        "type": "comment",
+        "z": "1461efce.7e162",
+        "name": "Token Grundeinstellung",
+        "info": "Hier muss der Token das erste mal eingetragen werden wenn es noch keinen gibt.",
+        "x": 160,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "d1ef800f.09def8",
+        "type": "comment",
+        "z": "1461efce.7e162",
+        "name": "Token erneuern",
+        "info": "",
+        "x": 140,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "1c2789a5.698ef6",
+        "type": "comment",
+        "z": "1461efce.7e162",
+        "name": "Token abfragen",
+        "info": "",
+        "x": 140,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "f174f20.05a431",
+        "type": "inject",
+        "z": "1461efce.7e162",
+        "name": "alle 1h testen",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "3600",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 380,
+        "wires": [
+            [
+                "2d638998.1385ae"
+            ]
+        ]
+    },
+    {
+        "id": "ab6d66e.059fe98",
+        "type": "debug",
+        "z": "1461efce.7e162",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 750,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "2d638998.1385ae",
+        "type": "function",
+        "z": "1461efce.7e162",
+        "name": "Ist Token noch gültig?",
+        "func": "var now = Math.round( Date.now() / 1000 );\nvar TOKEN_EXPIRED = global.get(\"TOKEN_EXPIRED\");\n\nif (now < TOKEN_EXPIRED) {\n    // Token ist gültig\n    msg.payload = {\n        TokenOK:true\n    } \n    \n} else {\n    //Token muss erneuert werden\n    msg.payload = {\n        TokenOK:false\n    } \n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 360,
+        "y": 380,
+        "wires": [
+            [
+                "d02a1f21.37c428"
+            ]
+        ]
+    },
+    {
+        "id": "d02a1f21.37c428",
+        "type": "switch",
+        "z": "1461efce.7e162",
+        "name": "TokenOK?",
+        "property": "payload.TokenOK",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            },
+            {
+                "t": "false"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 570,
+        "y": 380,
+        "wires": [
+            [
+                "c6187114.09ec6"
+            ],
+            [
+                "e1bfd569.5dc36"
+            ]
+        ],
+        "outputLabels": [
+            "Token gültig",
+            "Token muss erneuert werden"
+        ]
+    },
+    {
+        "id": "e1bfd569.5dc36",
+        "type": "function",
+        "z": "1461efce.7e162",
+        "name": "Basis Informationen aus manuellen Token",
+        "func": "\n\nvar ACCESS_TOKEN = global.get(\"ACCESS_TOKEN\");\nvar REFRESH_TOKEN = global.get(\"REFRESH_TOKEN\");\nvar TOKEN_SERVICE_CLIENT_ID = global.get(\"TOKEN_SERVICE_CLIENT_ID\");\nvar TOKEN_SERVICE_CLIENT_SECRET = global.get(\"TOKEN_SERVICE_CLIENT_SECRET\");\nvar ACCOUNTBROKER = global.get(\"ACCOUNTBROKER\");\n\nmsg.url = ACCOUNTBROKER+\"/oauth2/password\",\n\nmsg.headers={};\nmsg.headers['Content-Type']=\"application/x-www-form-urlencoded\";\n\n\nmsg.payload = {\n    grant_type:\"refresh_token\",\n    client_id:TOKEN_SERVICE_CLIENT_ID,\n    client_secret:TOKEN_SERVICE_CLIENT_SECRET,\n    refresh_token:REFRESH_TOKEN,\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 440,
+        "wires": [
+            [
+                "ab6d66e.059fe98",
+                "4aae1063.2c0a68"
+            ]
+        ]
+    },
+    {
+        "id": "8138ac48.414fd",
+        "type": "function",
+        "z": "1461efce.7e162",
+        "name": "Schreibe Neue Token Daten in global Flow",
+        "func": "// Schreibe den neuen Token zurück\n  global.set('ACCESS_TOKEN',msg.payload.access_token);\n  global.set('REFRESH_TOKEN',msg.payload.refresh_token);\n  global.set('expires_in',msg.payload.expires_in);\n\nvar TOKEN_EXPIRED = Math.round( Date.now() / 1000 ) + msg.payload.expires_in;\nnode.status({fill:\"green\",shape:\"dot\",text:\"connected\"});\nnode.status({text:TOKEN_EXPIRED});\n\nglobal.set('TOKEN_EXPIRED',TOKEN_EXPIRED);\n\nmsg.payload = \"Set global Token Variable\";\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 620,
+        "wires": [
+            [
+                "ac77c395.8534f",
+                "a6970b2a.fcb848"
+            ]
+        ]
+    },
+    {
+        "id": "ac77c395.8534f",
+        "type": "debug",
+        "z": "1461efce.7e162",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 780,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "c6187114.09ec6",
+        "type": "debug",
+        "z": "1461efce.7e162",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "d7921b21.23334",
+        "type": "comment",
+        "z": "1461efce.7e162",
+        "name": "Der frische Token",
+        "info": "",
+        "x": 800,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "cd1af8f8.806948",
+        "type": "comment",
+        "z": "1461efce.7e162",
+        "name": "Token wurde im \"global\" eingetragen",
+        "info": "",
+        "x": 860,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "d1f647e2.aed75",
+        "type": "comment",
+        "z": "1461efce.7e162",
+        "name": "Token für NIFI erneuern",
+        "info": "",
+        "x": 140,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "a6970b2a.fcb848",
+        "type": "function",
+        "z": "1461efce.7e162",
+        "name": "Abfragen der Parameter in NIFI (extern)",
+        "func": "var NIFI = global.get(\"NIFI\");\nvar NIFICONTEXT = global.get(\"NIFICONTEXT\");\nNIFICONTEXT = \"d5b456ba-0179-1000-d366-a9570336a158\";\nmsg.url = NIFI + \"/nifi-api/parameter-contexts/\" + NIFICONTEXT ;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 740,
+        "wires": [
+            [
+                "874cc544.9296f"
+            ]
+        ]
+    },
+    {
+        "id": "874cc544.9296f",
+        "type": "http request",
+        "z": "1461efce.7e162",
+        "name": "Secure NIFI API",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "e23232e1.c5b6a",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 700,
+        "y": 740,
+        "wires": [
+            [
+                "27c0308f.1e56e8",
+                "6ef1c195.3f3c08"
+            ]
+        ]
+    },
+    {
+        "id": "27c0308f.1e56e8",
+        "type": "json",
+        "z": "1461efce.7e162",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 890,
+        "y": 740,
+        "wires": [
+            [
+                "81227e70.b74368",
+                "8927e571.50d35"
+            ]
+        ]
+    },
+    {
+        "id": "81227e70.b74368",
+        "type": "debug",
+        "z": "1461efce.7e162",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 1050,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "8927e571.50d35",
+        "type": "function",
+        "z": "1461efce.7e162",
+        "name": "Value Bearer bauen",
+        "func": "var msg1 = {}\nvar i=0;\nvar ACCESS_TOKEN = global.get('ACCESS_TOKEN');\nvar newValue =\"\";\nnewValue=\"Bearer \" + ACCESS_TOKEN;\n\nvar anz = msg.payload.component.parameters.length;\n\nfor (i=0;i<anz;i++){\n    if (msg.payload.component.parameters[i].parameter.name ==\"Authorization\"){\n        break;\n    }\n}\n\nmsg1.payload = {\n    revision:msg.payload.revision,\n    id:msg.payload.id,\n    uri:msg.payload.uri,\n    permissions:msg.payload.permissions,\n    component:{\n        name:msg.payload.component.name,\n        description:msg.payload.component.description,\n        parameters:[msg.payload.component.parameters[i]],\n        id:msg.payload.component.id\n    },\n}\n\n\n\nmsg1.payload.component.parameters[0].parameter.value = newValue;\nmsg1.headers={};\nmsg1.headers['Content-Type']=\"application/json\";\nvar NIFI = global.get(\"NIFI\");\nvar NIFICONTEXT = global.get(\"NIFICONTEXT\");\n\nNIFICONTEXT = \"d5b456ba-0179-1000-d366-a9570336a158\";\nmsg1.url = NIFI + \"/nifi-api/parameter-contexts/\" + NIFICONTEXT +\"/update-requests/\" ;\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 820,
+        "wires": [
+            [
+                "3549f3bd.b8c644",
+                "aaa4fa26.be02e8"
+            ]
+        ]
+    },
+    {
+        "id": "27fa46c5.517772",
+        "type": "json",
+        "z": "1461efce.7e162",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 790,
+        "y": 820,
+        "wires": [
+            [
+                "85e8643a.1629f8"
+            ]
+        ]
+    },
+    {
+        "id": "85e8643a.1629f8",
+        "type": "debug",
+        "z": "1461efce.7e162",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 1010,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "f7de6604.aede98",
+        "type": "inject",
+        "z": "1461efce.7e162",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 80,
+        "wires": [
+            [
+                "78cb213b.f559f"
+            ]
+        ]
+    },
+    {
+        "id": "78cb213b.f559f",
+        "type": "function",
+        "z": "1461efce.7e162",
+        "name": "get Env Vars",
+        "func": "var ACCESS_TOKEN = \"\";\nvar REFRESH_TOKEN = \"\";\n\nvar CLUSTER = env.get('CLUSTER');\n\n\nvar TOKEN_SERVICE_CLIENT_ID = env.get('TOKEN_SERVICE_CLIENT_ID');\nvar TOKEN_SERVICE_CLIENT_SECRET = env.get('TOKEN_SERVICE_CLIENT_SECRET');\nvar CONTEXTBROKER = env.get('CONTEXTBROKER')||\"https://context.fiware-staging.kielregion.addix.io\";\nvar ACCOUNTBROKER = env.get('ACCOUNTBROKER')||\"https://accounts.fiware-staging.kielregion.addix.io\";\nvar FIWARE_SERVICE = env.get('FIWARE-SERVICE');\nvar FIWARE_SERVICEPATH = env.get('FIWARE-SERVICEPATH');\nvar NIFI = env.get('NIFI');\nvar NIFICONTEXT = env.get('NIFICONTEXT');\n\nglobal.set('TOKEN_SERVICE_CLIENT_ID',TOKEN_SERVICE_CLIENT_ID.trim());\nglobal.set('TOKEN_SERVICE_CLIENT_SECRET',TOKEN_SERVICE_CLIENT_SECRET.trim());\nglobal.set('CONTEXTBROKER',CONTEXTBROKER.trim());\nglobal.set('ACCOUNTBROKER',ACCOUNTBROKER.trim());\nglobal.set('FIWARE_SERVICE',FIWARE_SERVICE.trim());\nglobal.set('FIWARE_SERVICEPATH',FIWARE_SERVICEPATH.trim());\nglobal.set('CLUSTER',CLUSTER.trim());\nglobal.set('NIFI',NIFI.trim());\nglobal.set('NIFICONTEXT',NIFICONTEXT.trim());\n\n//global.set ('ACCESS_TOKEN',ACCESS_TOKEN.trim());\n//global.set ('REFRESH_TOKEN',REFRESH_TOKEN.trim());\n\nvar Token_expired = Math.round( Date.now() / 1000 ) + 170000;\nnode.status({text:Token_expired});\n\nglobal.set('TOKEN_EXPIRED',Token_expired);\n\nmsg.payload = \"Set global Enviroment Variable\";\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 80,
+        "wires": [
+            [
+                "6d1780ae.f0c4e",
+                "89db8c54.d1bfc8"
+            ]
+        ]
+    },
+    {
+        "id": "6d1780ae.f0c4e",
+        "type": "debug",
+        "z": "1461efce.7e162",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 630,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "6ef1c195.3f3c08",
+        "type": "debug",
+        "z": "1461efce.7e162",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "89db8c54.d1bfc8",
+        "type": "function",
+        "z": "1461efce.7e162",
+        "name": "Erstelle einen Token für den User node-red",
+        "func": "var TOKEN_SERVICE_CLIENT_ID = global.get(\"TOKEN_SERVICE_CLIENT_ID\");\nvar TOKEN_SERVICE_CLIENT_SECRET = global.get(\"TOKEN_SERVICE_CLIENT_SECRET\");\nvar ACCOUNTBROKER = global.get(\"ACCOUNTBROKER\");\n\n//var broker = CONTEXTBROKER.split(\".\");\n//node.warn(broker);\n\nmsg.url = ACCOUNTBROKER+\"/oauth2/password\",\nmsg.headers={};\nmsg.headers['Content-Type']=\"application/x-www-form-urlencoded\";\n\n\nmsg.payload = {\n    grant_type:\"password\",\n    client_id:TOKEN_SERVICE_CLIENT_ID,\n    client_secret:TOKEN_SERVICE_CLIENT_SECRET,\n    username: env.get('NODE_RED_FLOW_USER'),\n    password: env.get('NODE_RED_FLOW_USER_SECRET'),\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 160,
+        "wires": [
+            [
+                "9d03a38c.401c8"
+            ]
+        ]
+    },
+    {
+        "id": "9d03a38c.401c8",
+        "type": "http request",
+        "z": "1461efce.7e162",
+        "name": "",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "query",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 650,
+        "y": 160,
+        "wires": [
+            [
+                "a40ed37.418243"
+            ]
+        ]
+    },
+    {
+        "id": "a40ed37.418243",
+        "type": "json",
+        "z": "1461efce.7e162",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 830,
+        "y": 160,
+        "wires": [
+            [
+                "5a96df5a.b17ef",
+                "a5dc5c37.90ddc"
+            ]
+        ]
+    },
+    {
+        "id": "5a96df5a.b17ef",
+        "type": "debug",
+        "z": "1461efce.7e162",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 970,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "a5dc5c37.90ddc",
+        "type": "function",
+        "z": "1461efce.7e162",
+        "name": "set Token",
+        "func": "\nglobal.set ('ACCESS_TOKEN',msg.payload.access_token);\nglobal.set ('REFRESH_TOKEN',msg.payload.refresh_token);\nmsg.payload = \"Set global Token Variable\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 350,
+        "y": 220,
+        "wires": [
+            [
+                "acbf302e.44bfe"
+            ]
+        ]
+    },
+    {
+        "id": "acbf302e.44bfe",
+        "type": "debug",
+        "z": "1461efce.7e162",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 970,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "3549f3bd.b8c644",
+        "type": "http request",
+        "z": "1461efce.7e162",
+        "name": "Secure NIFI API",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "e23232e1.c5b6a",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 600,
+        "y": 820,
+        "wires": [
+            [
+                "27fa46c5.517772",
+                "b38c7337.b6b68"
+            ]
+        ]
+    },
+    {
+        "id": "879713f1.d06de8",
+        "type": "inject",
+        "z": "1461efce.7e162",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 110,
+        "y": 760,
+        "wires": [
+            [
+                "a6970b2a.fcb848"
+            ]
+        ]
+    },
+    {
+        "id": "b38c7337.b6b68",
+        "type": "debug",
+        "z": "1461efce.7e162",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 810,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "aaa4fa26.be02e8",
+        "type": "debug",
+        "z": "1461efce.7e162",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 580,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "92df4ba5.2cdd78",
+        "type": "comment",
+        "z": "1461efce.7e162",
+        "name": "Token ist noch gültig",
+        "info": "",
+        "x": 810,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "e23232e1.c5b6a",
+        "type": "tls-config",
+        "name": "NIFI Server extern",
+        "cert": "",
+        "key": "",
+        "ca": "",
+        "certname": "client.cert.pem",
+        "keyname": "client.key.enc.pem",
+        "caname": "cacert.pem",
+        "servername": "",
+        "verifyservercert": false
+    }
+]

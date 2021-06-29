@@ -1,0 +1,950 @@
+[
+    {
+        "id": "72882024.1be188",
+        "type": "tab",
+        "label": "Umweltbundesamt",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "3f9a335d.27779c",
+        "type": "function",
+        "z": "72882024.1be188",
+        "name": "Umweltbundesamt PM10 Stunden [componente=1]",
+        "func": "var date;\nvar datum;\nvar time;\nvar zeit;\ndate = new Date();\ndatum = (date.getFullYear() + '-' + ('00' + (date.getMonth()+1)).slice(-2) + '-' + ('00' + (date.getDate()-0)).slice(-2));\ntime = (('00' + date.getHours()).slice(-2) + ':' + ('00' + date.getMinutes()).slice(-2) + ':' + ('00' + date.getSeconds()).slice(-2));\nzeit = date.getHours()-0;\n//node.warn(\"Zeit: \" + zeit);\nmsg.url=\"https://www.umweltbundesamt.de/api/air_data/v2/measures/json?component=1&scope=2&date_from=\"+datum+\"&time_from=\"+zeit+\"&date_to=\"+datum+\"&time_to=\"+zeit+\"&lang=de\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 240,
+        "wires": [
+            [
+                "6bbae3b.d50619c",
+                "203fad0.aa63ad4"
+            ]
+        ]
+    },
+    {
+        "id": "fec89a95.b2b43",
+        "type": "debug",
+        "z": "72882024.1be188",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1190,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "6bbae3b.d50619c",
+        "type": "http request",
+        "z": "72882024.1be188",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": false,
+        "url": "",
+        "persist": false,
+        "authType": "",
+        "x": 770,
+        "y": 240,
+        "wires": [
+            [
+                "ac63aa8b.7c52a"
+            ]
+        ]
+    },
+    {
+        "id": "ac63aa8b.7c52a",
+        "type": "json",
+        "z": "72882024.1be188",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 970,
+        "y": 240,
+        "wires": [
+            [
+                "12369220.c3648e",
+                "77f69332.e5fabc"
+            ]
+        ]
+    },
+    {
+        "id": "12369220.c3648e",
+        "type": "function",
+        "z": "72882024.1be188",
+        "name": "Extrahiere intressante Stationen",
+        "func": "var msg1 = {};\nvar msg2 = {};\nvar msg3 = {};\nvar msg4 = {};\n\nmsg1.payload = {};\nmsg1.metadata = {};\nmsg1.payload.data = msg.payload.data[1554];\nmsg1.metadata.station = \"DESH027\";\nmsg1.metadata.messwert = \"pm10\";\n\nmsg2.payload = {};\nmsg2.metadata = {};\nmsg2.payload.data = msg.payload.data[1579];\nmsg2.metadata.station = \"DESH052\";\nmsg2.metadata.messwert = \"pm10\";\n\nmsg3.payload = {};\nmsg3.metadata = {};\nmsg3.payload.data = msg.payload.data[1584];\nmsg3.metadata.station = \"DESH057\";\nmsg3.metadata.messwert = \"pm10\";\n\n//DESH056 Eggebeck\nmsg4.payload = {};\nmsg4.metadata = {};\nmsg4.payload.data = msg.payload.data[1583];\nmsg4.metadata.station = \"DESH056\";\nmsg4.metadata.messwert = \"pm10\";\n\n\nreturn [msg1,msg2,msg3,msg4];",
+        "outputs": 4,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 570,
+        "y": 320,
+        "wires": [
+            [
+                "13eb2914.1c0db7"
+            ],
+            [
+                "13eb2914.1c0db7"
+            ],
+            [
+                "13eb2914.1c0db7"
+            ],
+            [
+                "13eb2914.1c0db7"
+            ]
+        ]
+    },
+    {
+        "id": "93d2dd74.3a4d7",
+        "type": "comment",
+        "z": "72882024.1be188",
+        "name": "Feinstaub PM10",
+        "info": "",
+        "x": 150,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "97f20307.8fb288",
+        "type": "function",
+        "z": "72882024.1be188",
+        "name": "Umweltbundesamt Ozon Stunden [componente=3]",
+        "func": "var date;\nvar zeit;\nvar datum;\ndate = new Date();\ndatum = (date.getFullYear() + '-' + ('00' + (date.getMonth()+1)).slice(-2) + '-' + ('00' + (date.getDate()-0)).slice(-2));\n//time = (('00' + date.getHours()).slice(-2) + ':' + ('00' + date.getMinutes()).slice(-2) + ':' + ('00' + date.getSeconds()).slice(-2));\nzeit = date.getHours()-0;\n\nmsg.url=\"https://www.umweltbundesamt.de/api/air_data/v2/measures/json?component=3&scope=2&date_from=\"+datum+\"&time_from=\"+zeit+\"&date_to=\"+datum+\"&time_to=\"+zeit+\"&lang=de\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 450,
+        "y": 600,
+        "wires": [
+            [
+                "b96fc93e.3a376"
+            ]
+        ]
+    },
+    {
+        "id": "34834973.07b99e",
+        "type": "function",
+        "z": "72882024.1be188",
+        "name": "Umweltbundesamt Kohlenmonoxid Stunden [componente=2]",
+        "func": "var date;\nvar zeit;\nvar datum;\ndate = new Date();\ndatum = (date.getFullYear() + '-' + ('00' + (date.getMonth()+1)).slice(-2) + '-' + ('00' + (date.getDate()-0)).slice(-2));\n//time = (('00' + date.getHours()).slice(-2) + ':' + ('00' + date.getMinutes()).slice(-2) + ':' + ('00' + date.getSeconds()).slice(-2));\nzeit = date.getHours()-0;\n\nmsg.url=\"https://www.umweltbundesamt.de/api/air_data/v2/measures/json?component=2&scope=2&date_from=\"+datum+\"&time_from=\"+zeit+\"&date_to=\"+datum+\"&time_to=\"+zeit+\"&lang=de\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 480,
+        "y": 400,
+        "wires": [
+            [
+                "32345b2.9b1d5a4"
+            ]
+        ]
+    },
+    {
+        "id": "fd3f9e18.7159c",
+        "type": "function",
+        "z": "72882024.1be188",
+        "name": "Umweltbundesamt Schwefeldioxid Stunden [componente=4]",
+        "func": "var date;\nvar zeit;\nvar datum;\ndate = new Date();\ndatum = (date.getFullYear() + '-' + ('00' + (date.getMonth()+1)).slice(-2) + '-' + ('00' + (date.getDate()-0)).slice(-2));\n//time = (('00' + date.getHours()).slice(-2) + ':' + ('00' + date.getMinutes()).slice(-2) + ':' + ('00' + date.getSeconds()).slice(-2));\nzeit = date.getHours()-0;\n\nmsg.url=\"https://www.umweltbundesamt.de/api/air_data/v2/measures/json?component=4&scope=2&date_from=\"+datum+\"&time_from=\"+zeit+\"&date_to=\"+datum+\"&time_to=\"+zeit+\"&lang=de\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 460,
+        "y": 800,
+        "wires": [
+            [
+                "b2e79f51.dae69"
+            ]
+        ]
+    },
+    {
+        "id": "eaa65500.20dc98",
+        "type": "function",
+        "z": "72882024.1be188",
+        "name": "Umweltbundesamt Stickstoffdioxid Stunden [componente=5]",
+        "func": "var date;\nvar zeit;\nvar datum;\ndate = new Date();\ndatum = (date.getFullYear() + '-' + ('00' + (date.getMonth()+1)).slice(-2) + '-' + ('00' + (date.getDate()-0)).slice(-2));\n//time = (('00' + date.getHours()).slice(-2) + ':' + ('00' + date.getMinutes()).slice(-2) + ':' + ('00' + date.getSeconds()).slice(-2));\nzeit = date.getHours()-0;\n\nmsg.url=\"https://www.umweltbundesamt.de/api/air_data/v2/measures/json?component=5&scope=2&date_from=\"+datum+\"&time_from=\"+zeit+\"&date_to=\"+datum+\"&time_to=\"+zeit+\"&lang=de\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 460,
+        "y": 1000,
+        "wires": [
+            [
+                "765d66de.9fc03"
+            ]
+        ]
+    },
+    {
+        "id": "32345b2.9b1d5a4",
+        "type": "http request",
+        "z": "72882024.1be188",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": false,
+        "url": "",
+        "persist": false,
+        "authType": "",
+        "x": 830,
+        "y": 400,
+        "wires": [
+            [
+                "b1be700f.29c02"
+            ]
+        ]
+    },
+    {
+        "id": "b1be700f.29c02",
+        "type": "json",
+        "z": "72882024.1be188",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 1030,
+        "y": 400,
+        "wires": [
+            [
+                "be513765.665dc"
+            ]
+        ]
+    },
+    {
+        "id": "be513765.665dc",
+        "type": "function",
+        "z": "72882024.1be188",
+        "name": "Extrahiere intressante Stationen",
+        "func": "var msg1 = {};\nvar msg2 = {};\nvar msg3 = {};\nvar msg4 = {};\n\nmsg1.payload = {};\nmsg1.metadata = {};\nmsg1.payload.data = msg.payload.data[1554];\nmsg1.metadata.station = \"DESH027\";\nmsg1.metadata.messwert = \"co\";\n\nmsg2.payload = {};\nmsg2.metadata = {};\nmsg2.payload.data = msg.payload.data[1579];\nmsg2.metadata.station = \"DESH052\";\nmsg2.metadata.messwert = \"co\";\n\nmsg3.payload = {};\nmsg3.metadata = {};\nmsg3.payload.data = msg.payload.data[1584];\nmsg3.metadata.station = \"DESH057\";\nmsg3.metadata.messwert = \"co\";\n\n//DESH056 Eggebeck\nmsg4.payload = {};\nmsg4.metadata = {};\nmsg4.payload.data = msg.payload.data[1583];\nmsg4.metadata.station = \"DESH056\";\nmsg4.metadata.messwert = \"co\";\n\nreturn [msg1,msg2,msg3,msg4];",
+        "outputs": 4,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 570,
+        "y": 500,
+        "wires": [
+            [
+                "5936d8ec.7b3a2"
+            ],
+            [
+                "5936d8ec.7b3a2"
+            ],
+            [
+                "5936d8ec.7b3a2"
+            ],
+            [
+                "5936d8ec.7b3a2"
+            ]
+        ]
+    },
+    {
+        "id": "ff8aaff0.e9886",
+        "type": "function",
+        "z": "72882024.1be188",
+        "name": "Extrahiere intressante Stationen",
+        "func": "var msg1 = {};\nvar msg2 = {};\nvar msg3 = {};\nvar msg4 = {};\n\nmsg1.payload = {};\nmsg1.metadata = {};\nmsg1.payload.data = msg.payload.data[1554];\nmsg1.metadata.station = \"DESH027\";\nmsg1.metadata.messwert = \"o3\";\n\nmsg2.payload = {};\nmsg2.metadata = {};\nmsg2.payload.data = msg.payload.data[1579];\nmsg2.metadata.station = \"DESH052\";\nmsg2.metadata.messwert = \"o3\";\n\nmsg3.payload = {};\nmsg3.metadata = {};\nmsg3.payload.data = msg.payload.data[1584];\nmsg3.metadata.station = \"DESH057\";\nmsg3.metadata.messwert = \"o3\";\n\n\n//DESH056 Eggebeck\nmsg4.payload = {};\nmsg4.metadata = {};\nmsg4.payload.data = msg.payload.data[1583];\nmsg4.metadata.station = \"DESH056\";\nmsg4.metadata.messwert = \"o3\";\n\nreturn [msg1,msg2,msg3,msg4];",
+        "outputs": 4,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 590,
+        "y": 700,
+        "wires": [
+            [
+                "d1f68c92.c56038"
+            ],
+            [
+                "d1f68c92.c56038"
+            ],
+            [
+                "d1f68c92.c56038"
+            ],
+            [
+                "d1f68c92.c56038"
+            ]
+        ]
+    },
+    {
+        "id": "b96fc93e.3a376",
+        "type": "http request",
+        "z": "72882024.1be188",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": false,
+        "url": "",
+        "persist": false,
+        "authType": "",
+        "x": 830,
+        "y": 600,
+        "wires": [
+            [
+                "b745c32e.f226c"
+            ]
+        ]
+    },
+    {
+        "id": "b745c32e.f226c",
+        "type": "json",
+        "z": "72882024.1be188",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 1030,
+        "y": 600,
+        "wires": [
+            [
+                "ff8aaff0.e9886"
+            ]
+        ]
+    },
+    {
+        "id": "bca22f6a.ee72e",
+        "type": "function",
+        "z": "72882024.1be188",
+        "name": "Extrahiere intressante Stationen",
+        "func": "var msg1 = {};\nvar msg2 = {};\nvar msg3 = {};\nvar msg4 = {};\n\nmsg1.payload = {};\nmsg1.metadata = {};\nmsg1.payload.data = msg.payload.data[1554];\nmsg1.metadata.station = \"DESH027\";\nmsg1.metadata.messwert = \"so2\";\n\nmsg2.payload = {};\nmsg2.metadata = {};\nmsg2.payload.data = msg.payload.data[1579];\nmsg2.metadata.station = \"DESH052\";\nmsg2.metadata.messwert = \"so2\";\n\nmsg3.payload = {};\nmsg3.metadata = {};\nmsg3.payload.data = msg.payload.data[1584];\nmsg3.metadata.station = \"DESH057\";\nmsg3.metadata.messwert = \"so2\";\n\n//DESH056 Eggebeck\nmsg4.payload = {};\nmsg4.metadata = {};\nmsg4.payload.data = msg.payload.data[1583];\nmsg4.metadata.station = \"DESH056\";\nmsg4.metadata.messwert = \"so2\";\n\nreturn [msg1,msg2,msg3,msg4];",
+        "outputs": 4,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 590,
+        "y": 900,
+        "wires": [
+            [
+                "ecfd6894.792ba8"
+            ],
+            [
+                "ecfd6894.792ba8"
+            ],
+            [
+                "ecfd6894.792ba8"
+            ],
+            [
+                "ecfd6894.792ba8"
+            ]
+        ]
+    },
+    {
+        "id": "b2e79f51.dae69",
+        "type": "http request",
+        "z": "72882024.1be188",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": false,
+        "url": "",
+        "persist": false,
+        "authType": "",
+        "x": 810,
+        "y": 800,
+        "wires": [
+            [
+                "decf7931.af3108"
+            ]
+        ]
+    },
+    {
+        "id": "decf7931.af3108",
+        "type": "json",
+        "z": "72882024.1be188",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 1010,
+        "y": 800,
+        "wires": [
+            [
+                "bca22f6a.ee72e"
+            ]
+        ]
+    },
+    {
+        "id": "87b98fcd.f37a4",
+        "type": "function",
+        "z": "72882024.1be188",
+        "name": "Extrahiere intressante Stationen",
+        "func": "var msg1 = {};\nvar msg2 = {};\nvar msg3 = {};\nvar msg4 = {};\n\nmsg1.payload = {};\nmsg1.metadata = {};\nmsg1.payload.data = msg.payload.data[1554];\nmsg1.metadata.station = \"DESH027\";\nmsg1.metadata.messwert = \"nox\";\n\nmsg2.payload = {};\nmsg2.metadata = {};\nmsg2.payload.data = msg.payload.data[1579];\nmsg2.metadata.station = \"DESH052\";\nmsg2.metadata.messwert = \"nox\";\n\nmsg3.payload = {};\nmsg3.metadata = {};\nmsg3.payload.data = msg.payload.data[1584];\nmsg3.metadata.station = \"DESH057\";\nmsg3.metadata.messwert = \"nox\";\n\n//DESH056 Eggebeck\nmsg4.payload = {};\nmsg4.metadata = {};\nmsg4.payload.data = msg.payload.data[1583];\nmsg4.metadata.station = \"DESH056\";\nmsg4.metadata.messwert = \"nox\";\n\nreturn [msg1,msg2,msg3,msg4];",
+        "outputs": 4,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 590,
+        "y": 1100,
+        "wires": [
+            [
+                "12a1e256.3446fe"
+            ],
+            [
+                "12a1e256.3446fe"
+            ],
+            [
+                "12a1e256.3446fe"
+            ],
+            [
+                "12a1e256.3446fe"
+            ]
+        ]
+    },
+    {
+        "id": "765d66de.9fc03",
+        "type": "http request",
+        "z": "72882024.1be188",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": false,
+        "url": "",
+        "persist": false,
+        "authType": "",
+        "x": 810,
+        "y": 1000,
+        "wires": [
+            [
+                "f62d94b1.401728"
+            ]
+        ]
+    },
+    {
+        "id": "f62d94b1.401728",
+        "type": "json",
+        "z": "72882024.1be188",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 1010,
+        "y": 1000,
+        "wires": [
+            [
+                "87b98fcd.f37a4"
+            ]
+        ]
+    },
+    {
+        "id": "db2058e2.b076b",
+        "type": "comment",
+        "z": "72882024.1be188",
+        "name": "Feinstaub CO",
+        "info": "",
+        "x": 150,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "9bfdf5c1.7d6cd8",
+        "type": "comment",
+        "z": "72882024.1be188",
+        "name": "Feinstaub Ozon",
+        "info": "",
+        "x": 160,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "32c8e41b.5dd724",
+        "type": "comment",
+        "z": "72882024.1be188",
+        "name": "Feinstaub Schwefeldioxid",
+        "info": "",
+        "x": 190,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "aa1a7be9.1ba14",
+        "type": "comment",
+        "z": "72882024.1be188",
+        "name": "Feinstaub NOx",
+        "info": "",
+        "x": 170,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "1a416ce2.3cbd83",
+        "type": "inject",
+        "z": "72882024.1be188",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "3600",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 1180,
+        "wires": [
+            [
+                "3f9a335d.27779c",
+                "34834973.07b99e",
+                "97f20307.8fb288",
+                "fd3f9e18.7159c",
+                "eaa65500.20dc98",
+                "e7369a7b.294ff"
+            ]
+        ]
+    },
+    {
+        "id": "4d40a96b.881258",
+        "type": "debug",
+        "z": "72882024.1be188",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 1280,
+        "wires": []
+    },
+    {
+        "id": "95e6bb7f.c99c2",
+        "type": "split",
+        "z": "72882024.1be188",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 500,
+        "y": 1280,
+        "wires": [
+            [
+                "4d40a96b.881258",
+                "c1438393.bdb18"
+            ]
+        ]
+    },
+    {
+        "id": "51794f7c.c63df",
+        "type": "split",
+        "z": "72882024.1be188",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 340,
+        "y": 1280,
+        "wires": [
+            [
+                "95e6bb7f.c99c2"
+            ]
+        ]
+    },
+    {
+        "id": "5936d8ec.7b3a2",
+        "type": "link out",
+        "z": "72882024.1be188",
+        "name": "CO zur Verarbeitung",
+        "links": [
+            "881f6a6c.c0761"
+        ],
+        "x": 835,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "d1f68c92.c56038",
+        "type": "link out",
+        "z": "72882024.1be188",
+        "name": "O3 zur Verarbeitung",
+        "links": [
+            "881f6a6c.c0761"
+        ],
+        "x": 835,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "ecfd6894.792ba8",
+        "type": "link out",
+        "z": "72882024.1be188",
+        "name": "SO2 zur Verarbeitung",
+        "links": [
+            "881f6a6c.c0761"
+        ],
+        "x": 835,
+        "y": 900,
+        "wires": []
+    },
+    {
+        "id": "12a1e256.3446fe",
+        "type": "link out",
+        "z": "72882024.1be188",
+        "name": "NOx zur Verarbeitung",
+        "links": [
+            "881f6a6c.c0761"
+        ],
+        "x": 815,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "881f6a6c.c0761",
+        "type": "link in",
+        "z": "72882024.1be188",
+        "name": "Umweltdaten Verarbeitung",
+        "links": [
+            "12a1e256.3446fe",
+            "ecfd6894.792ba8",
+            "d1f68c92.c56038",
+            "5936d8ec.7b3a2",
+            "13eb2914.1c0db7"
+        ],
+        "x": 215,
+        "y": 1280,
+        "wires": [
+            [
+                "51794f7c.c63df",
+                "dedf28c1.31d008",
+                "6a29520b.8d073c"
+            ]
+        ]
+    },
+    {
+        "id": "13eb2914.1c0db7",
+        "type": "link out",
+        "z": "72882024.1be188",
+        "name": "pm10 zur Verarbeitung",
+        "links": [
+            "881f6a6c.c0761"
+        ],
+        "x": 815,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "c1438393.bdb18",
+        "type": "function",
+        "z": "72882024.1be188",
+        "name": "erstelle Entität",
+        "func": "var internal_counter = flow.get(\"internal_counter\") || 0;\nvar date;\ninternal_counter++;\nflow.set(\"internal_counter\",internal_counter);\ndate = new Date((msg.payload[3]).substr(0,10) + \"T\" + (msg.payload[3]).substr(11,18) + \"Z\");\n//    dateObserved = date;\n//var station = msg.metadata.station;\n    flow.set(msg.metadata.station+\"['dateObserved']\",date);\nswitch(msg.metadata.messwert){\n\ncase \"pm10\":\n//    pm10 = msg.payload[2];\n    flow.set(msg.metadata.station+\"['pm10']\",msg.payload[2]);\n    break;\ncase \"co\":\n//    co = msg.payload[2];\n    flow.set(msg.metadata.station+\"['co']\",msg.payload[2]);\n    break;\ncase \"o3\":\n//    o3 = msg.payload[2];\n    flow.set(msg.metadata.station+\"['o3']\",msg.payload[2]);\n    break;    \n\ncase \"so2\":\n//    so2 = msg.payload[2];\n    flow.set(msg.metadata.station+\"['so2']\",msg.payload[2]);\n    break;     \n\ncase \"nox\":\n//    nox = msg.payload[2];\n    flow.set(msg.metadata.station+\"['nox']\",msg.payload[2]);    \n    break;     \n\n}\n\n\nreturn;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 1360,
+        "wires": [
+            [
+                "af963a00.e399f"
+            ]
+        ]
+    },
+    {
+        "id": "91213b9b.93df38",
+        "type": "http request",
+        "z": "72882024.1be188",
+        "name": "Daten an CB senden",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 500,
+        "y": 1560,
+        "wires": [
+            [
+                "2e7d3d99.4c9dd2",
+                "71a4e590.4140dc"
+            ]
+        ]
+    },
+    {
+        "id": "2e7d3d99.4c9dd2",
+        "type": "debug",
+        "z": "72882024.1be188",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 730,
+        "y": 1560,
+        "wires": []
+    },
+    {
+        "id": "af963a00.e399f",
+        "type": "debug",
+        "z": "72882024.1be188",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 570,
+        "y": 1360,
+        "wires": []
+    },
+    {
+        "id": "6849f1f3.0c0378",
+        "type": "delay",
+        "z": "72882024.1be188",
+        "name": "10 msg/s",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "20",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 280,
+        "y": 1560,
+        "wires": [
+            [
+                "91213b9b.93df38"
+            ]
+        ]
+    },
+    {
+        "id": "a0efe56.8493d18",
+        "type": "function",
+        "z": "72882024.1be188",
+        "name": "Counter to 0",
+        "func": "flow.set(\"internal_counter\",0);\nflow.set(\"counter_A\",0);\nflow.set(\"counter_B\",0);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 750,
+        "y": 1480,
+        "wires": [
+            [
+                "6418ae89.f3f8d"
+            ]
+        ]
+    },
+    {
+        "id": "6418ae89.f3f8d",
+        "type": "debug",
+        "z": "72882024.1be188",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 930,
+        "y": 1400,
+        "wires": []
+    },
+    {
+        "id": "dedf28c1.31d008",
+        "type": "debug",
+        "z": "72882024.1be188",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 330,
+        "y": 1180,
+        "wires": []
+    },
+    {
+        "id": "6a29520b.8d073c",
+        "type": "function",
+        "z": "72882024.1be188",
+        "name": "Counter",
+        "func": "var counter_A = flow.get(\"counter_A\") || 0;\nvar counter_B = flow.get(\"counter_B\") || 0;\ncounter_A ++;\nflow.set(\"counter_A\",counter_A);\nif(msg.payload.data === undefined){\n    counter_B ++;\n    flow.set(\"counter_B\",counter_B);\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 340,
+        "y": 1240,
+        "wires": [
+            [
+                "28a24971.f14e5e"
+            ]
+        ]
+    },
+    {
+        "id": "28a24971.f14e5e",
+        "type": "debug",
+        "z": "72882024.1be188",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 520,
+        "y": 1240,
+        "wires": []
+    },
+    {
+        "id": "e7369a7b.294ff",
+        "type": "delay",
+        "z": "72882024.1be188",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "2",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 200,
+        "y": 1440,
+        "wires": [
+            [
+                "4c8d5b1b.2db4d4"
+            ]
+        ]
+    },
+    {
+        "id": "4c8d5b1b.2db4d4",
+        "type": "function",
+        "z": "72882024.1be188",
+        "name": "Erstelle das Update der Sensoren",
+        "func": "var msg1 = {};\nvar date;\nvar umweltnode=[];\nvar elements=[];\nvar message;\nvar stations = [\"DESH027\",\"DESH052\",\"DESH057\",\"DESH056\"];\n\n// lese den aktuellen Token und setze die Header\nvar ACCESS_TOKEN = global.get(\"ACCESS_TOKEN\");\nvar FIWARE_SERVICE = global.get(\"FIWARE_SERVICE\");\nvar FIWARE_SERVICEPATH = global.get(\"FIWARE_SERVICEPATH\");\nvar CONTEXTBROKER = global.get(\"CONTEXTBROKER\");\n\nmsg1.headers={};\nmsg1.headers['Accept']=\"application/json\";\nmsg1.headers['Fiware-Service']=FIWARE_SERVICE;\nmsg1.headers['Fiware-Servicepath']=FIWARE_SERVICEPATH;\nmsg1.headers['Authorization']=\"Bearer \" + ACCESS_TOKEN;\nmsg1.url = CONTEXTBROKER + \"/v2/op/update\";\n\nvar internal_counter = flow.get(\"internal_counter\");\nvar counter_A = flow.get(\"counter_A\");\nvar counter_B = flow.get(\"counter_B\");\n\nvar anz_stations = stations.length;\nfor(i=0;i<anz_stations;i++){\n    id=stations[i];\n\n    umweltnode[i]=[0,0,0,0,0,0,0]\n    umweltnode[i][0] = id;\n    umweltnode[i][1] = flow.get(id+\"['dateObserved']\");\n    \n    if(flow.get(id+\"['pm10']\") == undefined){\n        umweltnode[i][2] = 0\n    } else {\n    umweltnode[i][2] = flow.get(id+\"['pm10']\");\n    }\n    \n    if(flow.get(id+\"['co']\") == undefined){\n        umweltnode[i][3] = 0\n    } else {\n    umweltnode[i][3] = flow.get(id+\"['co']\");\n    }\n    \n    if(flow.get(id+\"['o3']\") == undefined){\n        umweltnode[i][4] = 0\n    } else {\n    umweltnode[i][4] = flow.get(id+\"['o3']\");\n    }\n\n    if(flow.get(id+\"['so2']\") == undefined){\n        umweltnode[i][5] = 0\n    } else {\n    umweltnode[i][5] = flow.get(id+\"['so2']\");\n    }    \n\n    if(flow.get(id+\"['nox']\") == undefined){\n        umweltnode[i][6] = 0\n    } else {\n    umweltnode[i][6] = flow.get(id+\"['nox']\");\n    } \n    \n}\n\nvar anz = umweltnode.length;\n\nfor(i=0;i<anz;i++){\n\n    date = new Date((umweltnode[i][1]));\n//node.warn(date);\n    message = {\n        id: \"urn:ngsi:AirQualityObserved:Umweltbundesamt:\" + umweltnode[i][0],\n        type: \"AirQualityObserved\",\n        dateObserved: {\n\t\t\t    type: \"DateTime\",\n\t\t\t    value: date\n\t\t},\n\t    pm10: {\n\t\t    value: umweltnode[i][2],\n\t\t\tmetadata:{\n\t\t\t    timestamp:{\n\t\t\t        type:\"DateTime\",\n\t\t\t        value:date\n\t            }\n\t        }\n\t    },\n\t    co: {\n\t\t    value: umweltnode[i][3],\n\t\t\tmetadata:{\n\t\t\t    timestamp:{\n\t\t\t        type:\"DateTime\",\n\t\t\t        value:date\n\t            }\n\t        }\n\t    },\n\t    o3: {\n\t\t    value: umweltnode[i][4],\n\t\t\tmetadata:{\n\t\t\t    timestamp:{\n\t\t\t        type:\"DateTime\",\n\t\t\t        value:date\n\t            }\n\t        }\n\t    },\t    \n\t    so2: {\n\t\t    value: umweltnode[i][5],\n\t\t\tmetadata:{\n\t\t\t    timestamp:{\n\t\t\t        type:\"DateTime\",\n\t\t\t        value:date\n\t            }\n\t        }\n\t    },\n\t    nox: {\n\t\t    value: umweltnode[i][6],\n\t\t\tmetadata:{\n\t\t\t    timestamp:{\n\t\t\t        type:\"DateTime\",\n\t\t\t        value:date\n\t            }\n\t        }\n\t    }\t    \n    }\n\nelements.push(message);\n    \n}\n\nmsg1.payload = {\n    actionType:\"append\",\n    entities:elements\n}\n\nif(internal_counter == (counter_A-counter_B)) {\n   \n}\n\n\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 1440,
+        "wires": [
+            [
+                "77666299.7bcf3c",
+                "a0efe56.8493d18",
+                "6849f1f3.0c0378"
+            ]
+        ]
+    },
+    {
+        "id": "77666299.7bcf3c",
+        "type": "debug",
+        "z": "72882024.1be188",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 730,
+        "y": 1400,
+        "wires": []
+    },
+    {
+        "id": "71a4e590.4140dc",
+        "type": "link out",
+        "z": "72882024.1be188",
+        "name": "push Diagramm update",
+        "links": [
+            "79eb8e65.06a1e8"
+        ],
+        "x": 715,
+        "y": 1660,
+        "wires": []
+    },
+    {
+        "id": "b42bb555.4bdd",
+        "type": "comment",
+        "z": "72882024.1be188",
+        "name": "Update Diagramm",
+        "info": "",
+        "x": 790,
+        "y": 1620,
+        "wires": []
+    },
+    {
+        "id": "77f69332.e5fabc",
+        "type": "function",
+        "z": "72882024.1be188",
+        "name": "Anzahl Stationen",
+        "func": "var msg1 = {}\nvar anz = msg.payload.data.length;\nmsg1.payload = {\n    Anzahl: anz\n}\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 1180,
+        "y": 180,
+        "wires": [
+            [
+                "fec89a95.b2b43"
+            ]
+        ]
+    },
+    {
+        "id": "203fad0.aa63ad4",
+        "type": "debug",
+        "z": "72882024.1be188",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 750,
+        "y": 200,
+        "wires": []
+    }
+]

@@ -1,0 +1,239 @@
+[
+    {
+        "id": "58dc1efc.a305a",
+        "type": "tab",
+        "label": "insert GTFS Stops",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "d7825c78.71a668",
+        "type": "http in",
+        "z": "58dc1efc.a305a",
+        "name": "/gtfsstop",
+        "url": "/gtfsstop",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 250,
+        "y": 240,
+        "wires": [
+            [
+                "75c1be48.45bd6",
+                "498874fc.d72094",
+                "5595b8b5.d2d18"
+            ]
+        ]
+    },
+    {
+        "id": "75c1be48.45bd6",
+        "type": "http response",
+        "z": "58dc1efc.a305a",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 920,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "5595b8b5.d2d18",
+        "type": "function",
+        "z": "58dc1efc.a305a",
+        "name": "Split",
+        "func": "var msg1 = {};\n\nvar anz = msg.payload.entities.length;\n\nfor (i=0;i<anz;i++){\n    msg1.payload = msg.payload.entities[i]\n    node.send(msg1);\n}\n\nreturn;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 430,
+        "y": 280,
+        "wires": [
+            [
+                "15d05c6a.a41be4",
+                "c1dade73.fbeaf8"
+            ]
+        ]
+    },
+    {
+        "id": "498874fc.d72094",
+        "type": "debug",
+        "z": "58dc1efc.a305a",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 480,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "15d05c6a.a41be4",
+        "type": "debug",
+        "z": "58dc1efc.a305a",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 930,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "c1dade73.fbeaf8",
+        "type": "function",
+        "z": "58dc1efc.a305a",
+        "name": "sende an CB",
+        "func": "var msg1 = {};\n\n// lese den aktuellen Token und setze die Header\nvar ACCESS_TOKEN = global.get(\"ACCESS_TOKEN\");\nvar FIWARE_SERVICE = global.get(\"FIWARE_SERVICE\");\nvar FIWARE_SERVICEPATH = global.get(\"FIWARE_SERVICEPATH\");\nvar CONTEXTBROKER = global.get(\"CONTEXTBROKER\");\nmsg1.oldpayload = msg.payload;\nmsg1.headers={};\nmsg1.headers['Accept']=\"application/json\";\nmsg1.headers['Fiware-Service']=FIWARE_SERVICE;\nmsg1.headers['Fiware-Servicepath']=FIWARE_SERVICEPATH;\nmsg1.headers['Authorization']=\"Bearer \" + ACCESS_TOKEN;\n\n\n// Erstelle den geänderten Status zum wegschreiben\nmsg1.url = CONTEXTBROKER + \"/v2/op/update?options=keyValues\";\nmsg1.payload = {\n    actionType:\"append\",\n    entities:[\n        {\n        id: msg.payload.id,\n        type:msg.payload.type,\n        name:msg.payload.name.replace(/\\(|\\)|\\>|\\=|\\'/gm,\" \"),\n        description:msg.payload.description,\n        location:msg.payload.location,\n        operatedBy:msg.payload.operatedBy,\n        }\n]\n}\n\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 630,
+        "y": 320,
+        "wires": [
+            [
+                "5a4f2fbf.45ab78",
+                "acbe4d60.fcdae"
+            ]
+        ]
+    },
+    {
+        "id": "5a4f2fbf.45ab78",
+        "type": "debug",
+        "z": "58dc1efc.a305a",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 930,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "1ac548be.355277",
+        "type": "http request",
+        "z": "58dc1efc.a305a",
+        "name": "Anlegen aller Haltestellen",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 650,
+        "y": 400,
+        "wires": [
+            [
+                "c56f0beb.d5307",
+                "f3b5f1a0.a8d248"
+            ]
+        ]
+    },
+    {
+        "id": "c56f0beb.d5307",
+        "type": "debug",
+        "z": "58dc1efc.a305a",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 910,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "f3b5f1a0.a8d248",
+        "type": "switch",
+        "z": "58dc1efc.a305a",
+        "name": "BadRequest",
+        "property": "statusCode",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "neq",
+                "v": "204",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 630,
+        "y": 480,
+        "wires": [
+            [
+                "35bd464d.379cca"
+            ]
+        ]
+    },
+    {
+        "id": "35bd464d.379cca",
+        "type": "debug",
+        "z": "58dc1efc.a305a",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 910,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "acbe4d60.fcdae",
+        "type": "delay",
+        "z": "58dc1efc.a305a",
+        "name": "Speed Limit",
+        "pauseType": "rate",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "50",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 370,
+        "y": 400,
+        "wires": [
+            [
+                "1ac548be.355277"
+            ]
+        ]
+    },
+    {
+        "id": "9293d228.3fb13",
+        "type": "comment",
+        "z": "58dc1efc.a305a",
+        "name": "Import von GTFS Stops",
+        "info": "",
+        "x": 210,
+        "y": 120,
+        "wires": []
+    }
+]

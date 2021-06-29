@@ -1,0 +1,507 @@
+[
+    {
+        "id": "cb458b87.1c3d",
+        "type": "tab",
+        "label": "ParkingSpot verarbeiten",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "823cea4c.7df71",
+        "type": "comment",
+        "z": "cb458b87.1c3d",
+        "name": "Verarbeite ParkingDevice Statusänderung",
+        "info": "",
+        "x": 210,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "9fb1e9c0.48628",
+        "type": "link in",
+        "z": "cb458b87.1c3d",
+        "name": "verarbeite Statusänderung ParkingDevice LoRaWAN",
+        "links": [
+            "2e0ae903.bb883e"
+        ],
+        "x": 135,
+        "y": 200,
+        "wires": [
+            [
+                "452ac612.1f702"
+            ]
+        ]
+    },
+    {
+        "id": "4f4ee3a6.61f70c",
+        "type": "http request",
+        "z": "cb458b87.1c3d",
+        "name": "Get ParkingSpots",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 650,
+        "y": 200,
+        "wires": [
+            [
+                "bf8e2f5d.49dc"
+            ]
+        ]
+    },
+    {
+        "id": "bf8e2f5d.49dc",
+        "type": "json",
+        "z": "cb458b87.1c3d",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 830,
+        "y": 200,
+        "wires": [
+            [
+                "224ac12d.5f3ac6",
+                "374bc7ff.a93a1"
+            ]
+        ]
+    },
+    {
+        "id": "224ac12d.5f3ac6",
+        "type": "debug",
+        "z": "cb458b87.1c3d",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1010,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "f390c5e6.49f2e",
+        "type": "comment",
+        "z": "cb458b87.1c3d",
+        "name": "lese Referenzierten Parkplatz (ParkingSpot) aus",
+        "info": "",
+        "x": 600,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "47148e76.11b328",
+        "type": "function",
+        "z": "cb458b87.1c3d",
+        "name": "Übertrage Device Status (Test) in ParkingSpot",
+        "func": "var msg1 = {};\nvar parkstatus = \"closed\";\n// lese den aktuellen Token und setze die Header\nvar ACCESS_TOKEN = global.get(\"ACCESS_TOKEN\");\nvar FIWARE_SERVICE = global.get(\"FIWARE_SERVICE\");\nvar FIWARE_SERVICEPATH = global.get(\"FIWARE_SERVICEPATH\");\nvar CONTEXTBROKER = global.get(\"CONTEXTBROKER\");\n\nFIWARE_SERVICE = msg.oldpayload.tenant;\n\n\nmsg1.headers={};\nmsg1.headers['Accept']=\"application/json\";\nmsg1.headers['Fiware-Service']=FIWARE_SERVICE;\nmsg1.headers['Fiware-Servicepath']=FIWARE_SERVICEPATH;\nmsg1.headers['Authorization']=\"Bearer \" + ACCESS_TOKEN;\n\n\nif ((msg.oldpayload.data[0].value.value == \"occupied\")) {\n    parkstatus = \"occupied\"\n} else {\n    parkstatus = \"free\"\n}\n\nmsg1.oldpayload = msg.oldpayload;\nmsg1.oldpayload1 = msg.payload;\nmsg1.url = CONTEXTBROKER + \"/v2/op/update\";\nmsg1.payload = {\n    actionType:\"append\",\n    entities:[\n        {\n\t\tid: msg.payload.id,\n\t\tstatus: {\n\t\t    value: parkstatus,\n\t\t    metadata: {\n\t\t        timestamp:{\n\t\t            type: \"DateTime\",\n\t\t            value: msg.oldpayload.data[0].value.metadata.timestamp.value\n\t\t        }\n\t\t    }\n\t\t}\n\t}\n    ]\n}\n\n\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 540,
+        "y": 320,
+        "wires": [
+            [
+                "f888f55f.7bab38",
+                "df98822d.9f663"
+            ]
+        ]
+    },
+    {
+        "id": "452ac612.1f702",
+        "type": "function",
+        "z": "cb458b87.1c3d",
+        "name": "Erstelle ParkingSpot Abfrage",
+        "func": "var msg1 = {};\n\n \n// lese den aktuellen Token und setze die Header\nvar ACCESS_TOKEN = global.get(\"ACCESS_TOKEN\");\nvar FIWARE_SERVICE = global.get(\"FIWARE_SERVICE\");\nvar FIWARE_SERVICEPATH = global.get(\"FIWARE_SERVICEPATH\");\nvar CONTEXTBROKER = global.get(\"CONTEXTBROKER\");\n\nFIWARE_SERVICE = msg.payload.tenant;\n\n// Alten Payload mitnehmen\nmsg1.oldpayload = msg.payload;\n\nmsg1.headers={};\nmsg1.headers['Accept']=\"application/json\";\nmsg1.headers['Fiware-Service']=FIWARE_SERVICE;\nmsg1.headers['Fiware-Servicepath']=FIWARE_SERVICEPATH;\nmsg1.headers['Authorization']=\"Bearer \" + ACCESS_TOKEN;\n\n// lese den Referenzierten Parkplatz\nvar controlledAssets = msg.payload.data[0].controlledAsset.value\n\n// Loop duch Assets\nfor (i=0;i<controlledAssets.length;i++){\n    var Asset= controlledAssets[i].split(':');\n//    node.warn(Asset);\n    if (Asset[2] == \"ParkingSpot\") {\n        msg1.oldpayload.AssetID = i;\n        msg1.url=CONTEXTBROKER + \"/v2/entities/\" + controlledAssets[i];\n        break;\n    }\n}\n\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 200,
+        "wires": [
+            [
+                "4f4ee3a6.61f70c"
+            ]
+        ]
+    },
+    {
+        "id": "44362ea9.4858e",
+        "type": "debug",
+        "z": "cb458b87.1c3d",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1070,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "f888f55f.7bab38",
+        "type": "http request",
+        "z": "cb458b87.1c3d",
+        "name": "Update ParkingSpot",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 880,
+        "y": 300,
+        "wires": [
+            [
+                "44362ea9.4858e"
+            ]
+        ]
+    },
+    {
+        "id": "5c36d26.faedd2c",
+        "type": "link in",
+        "z": "cb458b87.1c3d",
+        "name": "verarbeite Statusänderung ParkingDevice Zenner",
+        "links": [
+            "ff71a863.6cc71"
+        ],
+        "x": 215,
+        "y": 680,
+        "wires": [
+            [
+                "d0638978.733a68"
+            ]
+        ]
+    },
+    {
+        "id": "45b72c7d.f3364c",
+        "type": "http request",
+        "z": "cb458b87.1c3d",
+        "name": "Get ParkingSpots",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 670,
+        "y": 680,
+        "wires": [
+            [
+                "1ce4cf4a.c82b19"
+            ]
+        ]
+    },
+    {
+        "id": "1ce4cf4a.c82b19",
+        "type": "json",
+        "z": "cb458b87.1c3d",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 850,
+        "y": 680,
+        "wires": [
+            [
+                "8fb68051.23d878",
+                "97ecde43.ee5c58"
+            ]
+        ]
+    },
+    {
+        "id": "8fb68051.23d878",
+        "type": "debug",
+        "z": "cb458b87.1c3d",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1030,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "103727ec.c7fee8",
+        "type": "comment",
+        "z": "cb458b87.1c3d",
+        "name": "lese Referenzierten Parkplatz (ParkingSpot) aus",
+        "info": "",
+        "x": 600,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "97ecde43.ee5c58",
+        "type": "function",
+        "z": "cb458b87.1c3d",
+        "name": "Übertrage Device Status in ParkingSpot",
+        "func": "var msg1 = {};\nvar parkstatus = \"closed\";\n// lese den aktuellen Token und setze die Header\nvar ACCESS_TOKEN = global.get(\"ACCESS_TOKEN\");\nvar FIWARE_SERVICE = global.get(\"FIWARE_SERVICE\");\nvar FIWARE_SERVICEPATH = global.get(\"FIWARE_SERVICEPATH\");\nvar CONTEXTBROKER = global.get(\"CONTEXTBROKER\");\n\nmsg1.headers={};\nmsg1.headers['Accept']=\"application/json\";\nmsg1.headers['Fiware-Service']=FIWARE_SERVICE;\nmsg1.headers['Fiware-Servicepath']=FIWARE_SERVICEPATH;\nmsg1.headers['Authorization']=\"Bearer \" + ACCESS_TOKEN;\n\nif (msg.oldpayload.data[0].value.value != msg.payload.status.value) {\nif (msg.oldpayload.data[0].value.value == \"occupied\") {\n    parkstatus = \"occupied\"\n} \n\nif (msg.oldpayload.data[0].value.value == \"free\") {\n    parkstatus = \"free\"\n}\n\n\n\nmsg1.oldpayload = msg.oldpayload;\nmsg1.oldpayload1 = msg.payload;\nmsg1.url = CONTEXTBROKER + \"/v2/op/update\";\nmsg1.payload = {\n    actionType:\"append\",\n    entities:[\n        {\n\t\tid: msg.payload.id,\n\t\tstatus: {\n\t\t    value: parkstatus,\n\t\t    metadata: {\n\t\t        timestamp:{\n\t\t            type: \"DateTime\",\n\t\t            value: msg.oldpayload.data[0].value.metadata.timestamp.value\n\t\t        }\n\t\t    }\n\t\t},\n\t\tlocation:msg.oldpayload.data[0].location\n\t}\n    ]\n}\n\n\n}\nelse {\nmsg1.payload=\"nix\"\n}\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 360,
+        "y": 780,
+        "wires": [
+            [
+                "80807b0c.427df"
+            ]
+        ]
+    },
+    {
+        "id": "d0638978.733a68",
+        "type": "function",
+        "z": "cb458b87.1c3d",
+        "name": "Erstelle ParkingSpot Abfrage",
+        "func": "var msg1 = {};\n\n// Alten Payload mitnehmen\nmsg1.oldpayload = msg.payload; \n// lese den aktuellen Token und setze die Header\nvar ACCESS_TOKEN = global.get(\"ACCESS_TOKEN\");\nvar FIWARE_SERVICE = global.get(\"FIWARE_SERVICE\");\nvar FIWARE_SERVICEPATH = global.get(\"FIWARE_SERVICEPATH\");\nvar CONTEXTBROKER = global.get(\"CONTEXTBROKER\");\n\nmsg1.headers={};\nmsg1.headers['Accept']=\"application/json\";\nmsg1.headers['Fiware-Service']=FIWARE_SERVICE;\nmsg1.headers['Fiware-Servicepath']=FIWARE_SERVICEPATH;\nmsg1.headers['Authorization']=\"Bearer \" + ACCESS_TOKEN;\n\n// lese den Referenzierten Parkplatz\nvar controlledAssets = msg.payload.data[0].controlledAsset.value\n\n// Loop duch Assets\nfor (i=0;i<controlledAssets.length;i++){\n    var Asset= controlledAssets[i].split(':');\n//    node.warn(Asset);\n    if (Asset[2] == \"ParkingSpot\") {\n        msg1.oldpayload.AssetID = i;\n        msg1.url=CONTEXTBROKER + \"/v2/entities/\" + controlledAssets[i];\n        break;\n    }\n}\n\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 400,
+        "y": 680,
+        "wires": [
+            [
+                "45b72c7d.f3364c"
+            ]
+        ]
+    },
+    {
+        "id": "59d7bc71.7ba75c",
+        "type": "debug",
+        "z": "cb458b87.1c3d",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1030,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "43b9134b.2a6344",
+        "type": "http request",
+        "z": "cb458b87.1c3d",
+        "name": "Update ParkingSpot",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 840,
+        "y": 780,
+        "wires": [
+            [
+                "59d7bc71.7ba75c"
+            ]
+        ]
+    },
+    {
+        "id": "4a42e6d5.2218",
+        "type": "comment",
+        "z": "cb458b87.1c3d",
+        "name": "LoRaWAN ispeg.cloud",
+        "info": "",
+        "x": 170,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "6ee10f76.4c069",
+        "type": "comment",
+        "z": "cb458b87.1c3d",
+        "name": "Zenner Plattform",
+        "info": "",
+        "x": 140,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "faaa35fe.e29e48",
+        "type": "debug",
+        "z": "cb458b87.1c3d",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 630,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "80807b0c.427df",
+        "type": "switch",
+        "z": "cb458b87.1c3d",
+        "name": "Nix zu Tun?",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "neq",
+                "v": "nix",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 630,
+        "y": 780,
+        "wires": [
+            [
+                "43b9134b.2a6344",
+                "10f49131.1610b7"
+            ],
+            [
+                "faaa35fe.e29e48"
+            ]
+        ]
+    },
+    {
+        "id": "10f49131.1610b7",
+        "type": "debug",
+        "z": "cb458b87.1c3d",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 810,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "df98822d.9f663",
+        "type": "debug",
+        "z": "cb458b87.1c3d",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 830,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "374bc7ff.a93a1",
+        "type": "switch",
+        "z": "cb458b87.1c3d",
+        "name": "Text oder struktuiertes Value",
+        "property": "oldpayload.data[0].value.type",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "Text",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "StructuredValue",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 180,
+        "y": 340,
+        "wires": [
+            [
+                "47148e76.11b328"
+            ],
+            [
+                "81177e7e.dcf5c"
+            ],
+            [
+                "a2b09d31.08c9e"
+            ]
+        ]
+    },
+    {
+        "id": "81177e7e.dcf5c",
+        "type": "function",
+        "z": "cb458b87.1c3d",
+        "name": "Übertrage Device Status (Array) in ParkingSpot",
+        "func": "var msg1 = {};\nvar parkstatus = \"closed\";\n// lese den aktuellen Token und setze die Header\nvar ACCESS_TOKEN = global.get(\"ACCESS_TOKEN\");\nvar FIWARE_SERVICE = global.get(\"FIWARE_SERVICE\");\nvar FIWARE_SERVICEPATH = global.get(\"FIWARE_SERVICEPATH\");\nvar CONTEXTBROKER = global.get(\"CONTEXTBROKER\");\n\nFIWARE_SERVICE = msg.oldpayload.tenant;\n\n\nmsg1.headers={};\nmsg1.headers['Accept']=\"application/json\";\nmsg1.headers['Fiware-Service']=FIWARE_SERVICE;\nmsg1.headers['Fiware-Servicepath']=FIWARE_SERVICEPATH;\nmsg1.headers['Authorization']=\"Bearer \" + ACCESS_TOKEN;\n\n\nif ((msg.oldpayload.data[0].value.value[0] === true)) {\n    parkstatus = \"occupied\"\n} else {\n    parkstatus = \"free\"\n}\n\nmsg1.oldpayload = msg.oldpayload;\nmsg1.oldpayload1 = msg.payload;\nmsg1.url = CONTEXTBROKER + \"/v2/op/update\";\nmsg1.payload = {\n    actionType:\"append\",\n    entities:[\n        {\n\t\tid: msg.payload.id,\n\t\tstatus: {\n\t\t    value: parkstatus,\n\t\t    metadata: {\n\t\t        timestamp:{\n\t\t            type: \"DateTime\",\n\t\t            value: msg.oldpayload.data[0].value.metadata.timestamp.value\n\t\t        }\n\t\t    }\n\t\t}\n\t}\n    ]\n}\n\n\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 540,
+        "y": 360,
+        "wires": [
+            [
+                "df98822d.9f663",
+                "f888f55f.7bab38"
+            ]
+        ]
+    },
+    {
+        "id": "a2b09d31.08c9e",
+        "type": "debug",
+        "z": "cb458b87.1c3d",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 460,
+        "y": 420,
+        "wires": []
+    }
+]
