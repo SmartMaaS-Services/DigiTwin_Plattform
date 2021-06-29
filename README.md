@@ -84,8 +84,7 @@ Die hier gezeigte Struktur beliefert nun die MobilityServices OffStreetParking u
 
 Damit NODE-RED die Daten für den DigiTwin bereitstellen kann werden verschiedene Flows benötigt:
 
-- [Automatisches Update der Token](/NODE-RED/FlowTokenVerwaltung.json)
-- Endpunkte DigiTwin
+- Automatisches Update der Token  ./NODE-RED/FlowTokenVerwaltung.json
 - Empfange Notifications
 - Parking Device verarbeiten
 - ParkingSpot verarbeiten
