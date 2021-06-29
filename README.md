@@ -28,8 +28,16 @@ Daraus haben wir nur die für das Projekt notwendigen Komponenten eingesetzt und
 
 Die FIWARE Plattform benötigt mindestens einen Tenant.
 Unter https://apis.hauptdomain.tld meldet sich der Plattform Administrator an.
+
 ![LogIn](/images/MobilityLogIn.png)
 
+Und wechselt auf den TAB Teanant.
+
+![TenantManager](/images/TenantManager.png)
+
+Dort wird der neue Tenant erstellt, dier mit dem Namen *DigiTwin*
+
+![Tenant DigiTwin](/images/TenantDigiTwin.png)
 
 ## Anmelden an die Plattform
 
