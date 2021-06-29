@@ -82,6 +82,13 @@ Die hier gezeigte Struktur beliefert nun die MobilityServices OffStreetParking u
 
 ## Die Node-RED Flows für den DigiTwin
 
+Dem Node-RED POD müssen die folgenden Environment Variablen übergeben werden:
+
+|Name|Beschreibung|
+|--------|--------|
+|TEST|Das ist ein Test|
+
+
 Damit NODE-RED die Daten für den DigiTwin bereitstellen kann werden verschiedene Flows benötigt:
 
 - Automatisches Update der Token -> /NODE-RED/FlowTokenVerwaltung.json
