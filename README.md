@@ -22,6 +22,16 @@ Daraus haben wir nur die für das Projekt notwendigen Komponenten eingesetzt und
 
 ## Installation der DigiTwin APP
 
+## Datenmodelle und ihre Abhänjikeiten
+
+Das Modell eines DigiTwin besteht aus mehreren Datenmodellen die die zusammen die Dienste einer Mobilitäts Station abbilden können.
+
+Die Services sind dabei dynamisch und unterscheiden sich von Station zu Station
+
+die 3 Datenmodelle MobilityRegion, MobilityStation und MobilityService sind wie im folgenden Bild aufeinander aufgebaut:
+
+![Die Datenmodelle Mobility...](/images/MobilityModelle.png)
+
 ## Die Node-RED Flows für den DigiTwin
 
 
