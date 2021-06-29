@@ -23,6 +23,17 @@ Daraus haben wir nur die für das Projekt notwendigen Komponenten eingesetzt und
 
 ## Installation der DigiTwin APP
 
+## Anmelden an die Plattform
+
+Um mit der Plattform interagieren zu können ist ein Account notwendig den man sich über https://accounts.hauptdomain.tld/sign_up/ einrichten muss.
+Wir benötigen 2 System Accounts für den Betrieb des DigiTwin.
+
+- *node-red* für die Datenverarbeitung, dem laden der Daten in die Plattform und dem berechnen der Ergebnisse
+- *apidt* als System User für die DigiTwin API damit die REST API Daten aus der Plattform lesen kann.
+
+![Anmeldung](/images/SignUp.png)
+
+Der Administrator berechtigt danach die Accounts im TenantManager für den DigiTwin Tenant.
 
 ## Einrichten des Tenant
 
@@ -39,13 +50,10 @@ Dort wird der neue Tenant erstellt, dier mit dem Namen *DigiTwin*
 
 ![Tenant DigiTwin](/images/TenantDigiTwin.png)
 
-## Anmelden an die Plattform
-
-Um mit der Plattform interagieren zu können ist ein Accaut notwendig den man sich über https://accounts.hauptdomain.tld einrichten muss.
-
-![Anmeldung]()
-
-
+Damit wird ein neuer Tenant erstellt und der User node-red zugeordnet der für Node-RED die Erreichbarkeit des Tenants ermöglicht.
+Den Token der FIWARE Plattform holt sich Node-RED nun direkt aus dem Flow und verwaltet seinen Token auch über seine Gültigkeit.
+Sollte der Token nach der voreingestellten zeit auslaufen kann sich Node-RED diesen sebststängig erneuern.
+Somit dürfen nun die Flows aus Node-RED Daten aus dem Teanant DigiTwin lesen und auch frische Daten in diesen Teanant schreiben.
 
 ## Datenmodelle und ihre Abhängigkeiten
 
@@ -56,6 +64,18 @@ Die Services sind dabei dynamisch und unterscheiden sich von Station zu Station
 die 3 Datenmodelle MobilityRegion, MobilityStation und MobilityService sind wie im folgenden Bild aufeinander aufgebaut:
 
 ![Die Datenmodelle Mobility...](/images/MobilityModelle.png)
+
+Die Datenmodelle Mobility\* sind frei unter [SMARTCITIES/mobility](https://github.com/smart-data-models/incubated/tree/master/SMARTCITIES/mobility) errreichbar.
+Die Datenmodelle der MobilityServices sind entsprechend der örtlichen Gegebenheiten aus dem Fundus von [smartdatamodels.org](https://smartdatamodels.org/) zu beziehen.
+
+Als Beispiel ist in dem folgenden Schaubild Ein Parkplatzmodell angebildet:
+
+![Parken](/images/parking.png)
+
+Dieses Modell nutzt die zusätzliche Finktionalität des Bosch Parksensores TPS110 die Bodentemperatur aufzunehmen.
+Damit ist der Modellstruktur zusätzlich noch ein WeatherObserved Datenmodell zugeordnet.
+
+Die hier gezeigte Struktur beliefert nun die MobilityServices OffStreetParking und WeatherObserved welches als Info Dienst an der MobilityStation verfügbar ist.
 
 ## Die Node-RED Flows für den DigiTwin
 
