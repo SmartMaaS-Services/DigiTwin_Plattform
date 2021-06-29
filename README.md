@@ -16,13 +16,30 @@ Daraus haben wir nur die für das Projekt notwendigen Komponenten eingesetzt und
 - [Platform (APIinf)](https://gitlab.com/zentrale-open-data-plattform-paderborn/fiware/platform "Dokumentation Platform") Die Notwendigen APIs der Plattform
 - [Installation der Plattform und einrichten der Secrets](https://gitlab.com/zentrale-open-data-plattform-paderborn/fiware/installation/-/tree/master/platform-setup)
 
-## Einrichten des Tenant
+
 
 ## Installation der DigiTwin API
 
+
 ## Installation der DigiTwin APP
 
-## Datenmodelle und ihre Abhänjikeiten
+
+## Einrichten des Tenant
+
+Die FIWARE Plattform benötigt mindestens einen Tenant.
+Unter https://apis.hauptdomain.tld meldet sich der Plattform Administrator an.
+![LogIn](/images/MobilityLogIn.png)
+
+
+## Anmelden an die Plattform
+
+Um mit der Plattform interagieren zu können ist ein Accaut notwendig den man sich über https://accounts.hauptdomain.tld einrichten muss.
+
+![Anmeldung]()
+
+
+
+## Datenmodelle und ihre Abhängigkeiten
 
 Das Modell eines DigiTwin besteht aus mehreren Datenmodellen die die zusammen die Dienste einer Mobilitäts Station abbilden können.
 
