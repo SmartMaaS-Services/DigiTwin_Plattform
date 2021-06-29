@@ -84,18 +84,54 @@ Die hier gezeigte Struktur beliefert nun die MobilityServices OffStreetParking u
 
 Damit NODE-RED die Daten für den DigiTwin bereitstellen kann werden verschiedene Flows benötigt:
 
-- Automatisches Update der Token  ./NODE-RED/FlowTokenVerwaltung.json
-- Empfange Notifications
-- Parking Device verarbeiten
-- ParkingSpot verarbeiten
-- ParkingSide verarbeiten
-- BodenTemperatur ParkingDevice
-- insert GTFS Stops
-- Umweltbundesamt
-- TimeTable erstellen
+- Automatisches Update der Token -> /NODE-RED/FlowTokenVerwaltung.json
+- Endpunkte DigiTwin -> /NODE-RED/FlowEndpunkteDigiTwin.json 
+- Empfange Notifications -> /NODE-RED/FlowEmpfangeNotifications.json
+- Parking Device verarbeiten -> /NODE-RED/FlowParkingDevice.json
+- ParkingSpot verarbeiten -> /NODE-RED/FlowParkingspotVerarbeitung.json
+- ParkingSide verarbeiten -> /NODE-RED/FlowParkingSideVerarbeiten.json
+- BodenTemperatur ParkingDevice -> /NODE-RED/FlowBodenTemperaturParkingDevice.json
+- insert GTFS Stops -> /NODE-RED/FlowinsertGTFSStops.json
+- Umweltbundesamt -> /NODE-RED/FlowUmweltbundesamt.json
+- TimeTable erstellen -> /NODE-RED/FlowTimeTableErstellen.json
 
 ### Automatisches Update der Token
 
 ![Token](/images/AutomatischesUpdateToken.png)
 
+### Endpunkte DigiTwin
+
+![Token](/images/EndpunkteDigiTwin.png)
+
+### Empfange Notifications
+
+![Notifications](/images/EmpfangeNotifications.png)
+
+### Parking Device verarbeiten
+
+![Parking Device](/images/ParkingDevice.png)
+
+### ParkingSpot verarbeiten
+
+![ParkingSpot](/images/ParkingSpotVerarbeiten.png)
+
+### ParkingSide verarbeiten
+
+![ParkingSide](/images/AParkingSideVerarbeiten.png)
+
+### BodenTemperatur ParkingDevice
+
+![BodenTemperatur](/images/BodenTemperaturParkingDevice.png)
+
+### insert GTFS Stops
+
+![GTFS](/images/insertGTFSStops.png)
+
+### Umweltbundesamt
+
+![Umweltbundesamt](/images/Umweltbundesamt.png)
+
+### TimeTable erstellen
+
+![TimeTable](/images/TimeTableErstellen.png)
 
