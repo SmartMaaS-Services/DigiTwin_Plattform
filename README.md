@@ -20,8 +20,11 @@ Daraus haben wir nur die für das Projekt notwendigen Komponenten eingesetzt und
 
 ## Installation der DigiTwin API
 
+[Installation DigiTwin API](https://github.com/SmartMaaS-Services/DigiTwin_API)
 
 ## Installation der DigiTwin APP
+
+[Installation DigiTwin APP](https://github.com/SmartMaaS-Services/DigiTwin_APP)
 
 ## Anmelden an die Plattform
 
