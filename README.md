@@ -86,7 +86,26 @@ Dem Node-RED POD müssen die folgenden Environment Variablen übergeben werden:
 
 |Name|Beschreibung|
 |--------|--------|
-|TEST|Das ist ein Test|
+|ACCOUNTBROKER_PRODUCTION|URL zum ACCOUNT Server|
+|ACCOUNTBROKER_STAGING|URL zum ACCOUNT Server|
+|CLIENTID_PRODUCTION|OAuth2 ClientID|
+|CLIENTID_STAGING|OAuth2 ClientID|
+|CLIENTSECRET_STAGING|OAuth2 Client Secret|
+|CLIENTSECRET_PRODUCTION|OAuth2 Client Secret|
+|CONTEXTBROKER_PRODUCTION|URL zum ContextBroker|
+|CONTEXTBROKER_STAGING|URL zum ContextBroker|
+|FIWARE_SERVICE_PRODUCTION| Fiware_Service|
+|FIWARE_SERVICE_STAGING| Fiware_Service|
+|FIWARE_SERVICEPATH_PRODUCTION| Fiware_Service_Path|
+|FIWARE_SERVICEPATH_STAGING|Fiware_Service_Path|
+|NODE_RED_CREDENTIAL_SECRET_PRODUCTION|
+|NODE_RED_CREDENTIAL_SECRET_STAGING|
+|NODE_RED_FLOW_USER_PRODUCTION|Der Node Red User|
+|NODE_RED_FLOW_USER_STAGING|Der Node Red User|
+|NODE_RED_FLOW_USER_SECRET_PRODUCTION|Das Secret des Users|
+|NODE_RED_FLOW_USER_SECRET_STAGING|Das Secret des Users|
+|FLOW_TOKEN|Das Flow Token|
+
 
 
 Damit NODE-RED die Daten für den DigiTwin bereitstellen kann werden verschiedene Flows benötigt:
